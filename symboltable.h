@@ -1,19 +1,24 @@
 #ifndef SYMBOLTABLE_H
 #define SYMBOLTABLE_H
-#include <stdint.h>
 
-enum e_type
-{
-    S8BIT=1,
-    S16BIT=2
-};
+
 
 struct struct_symbol
 {
-    uint8_t id[256];
-    enum e_type mem_size;
-    uint8_t initialized;
-    uint8_t depth;
+    uint16_t id;
+    int constant;
+    int init;
+    uint16_t depth;
 };
+
+typedef struct struct_symbol type_symbol;
+
+int add_symbol(const uint16_t*, int, uint16_t);
+int get_address(const uint16_t, uint8_t);
+int is_initialized(const uint8_t, uint8_t);
+int is_constant(const uint16_t, uint16_t);
+int get_last_pointer();
+void pop_symbol();
+void set_initialized(const uint8_t*, uint8_t);
 
 #endif

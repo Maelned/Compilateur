@@ -46,7 +46,7 @@ char return t_CHAR ;
 return return t_RETURN ;
 \" return t_GUILLEMET ;
 ";" return t_POINT_VIRGULE ;
-[a-zA-Z][a-zA-Z0-9"_""-"]* return t_VARIABLE ;
+[a-zA-Z][a-zA-Z0-9_]* return t_VARIABLE ;
 
 
 %%
