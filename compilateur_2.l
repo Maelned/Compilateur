@@ -9,45 +9,79 @@
 CONST const
 TYPE_INT int
 TYPE_VOID void
-VAR [a-zA-Z][a-zA-Z0-9_]*
+
 AFFEC \=
 COMPAR \=\=
 NCOMPAR \!\=
+INF "<"
+INF_E "<="
+SUP ">"
+SUP_E ">="
+
 AO \{
 AF \}
 PO \(
 PF \)
+CO \[
+CF \]
+
+INT [0-9]+
+CHAR \'.\'
+STRING \".*\"
+MAIN main
+VAR [a-zA-Z][a-zA-Z0-9_]*
+IF if
+ELSE else
+VIRG \,
+PV \;
 
 OP_ADD \+
 OP_DIFF \-
 OP_MUL \*
 OP_DIV \/
-PV \;
+
+TAB "\t"+
+EOF "\n"
 PRINT printf
 
 
 %%
-{TYPE_INT} return t_INT;
-{CONST} return t_CONST;
+{CONST} return t_TCONST;
+{TYPE_INT} return t_TINT;
 {TYPE_VOID} return t_VOID;
-\t  ;
-" " {};
-"," return t_VIRGULE ;
-"main" return t_MAIN ;
-"printf" return t_PRINTF ;
-"while" return t_WHILE ;
-"for" return t_FOR ;
-"if" return t_IF ;
-float return t_FLOAT ;
-char return t_CHAR ;
-[0-9]+ return t_CHIFFRE ;
-"\n"+ ;
+
+{AFEC} return t_EGAL; 
+{COMPAR} return t_COMPAR ;
+{NCOMPAR} return t_NCOMPAR;
+{INF} return t_INF;
+{INF_E} return t_INF_E;
+{SUP} return t_SUP;
+{SUP_E} return t_SUP_E;
+{TAB} return t_TAB;
+
+{CHAR} return t_CHAR;
+{INT} return t_INT;
+{STRING} return t_STRING;
+{MAIN} return t_MAIN;
+{VAR} return t_VAR;
+{PRINTF} return t_PRINTF;
+{IF} return t_IF;
+{ELSE} return t_ELSE;
+{PV} return t_PV;
+{VIRG} return t_VIRG;
+{EOF} return t_EOF;
+
+
 "\b"+ ;
-{PO} return t_PO ;
-{PF} return t_PF ;
+
+{PO} return t_PO;
+{PF} return t_PF;
 {AO} return t_AO; 
 {AF} return t_AF;
-"["[0-9]+"]" return t_TAB ;
+{CO} return t_CO;
+{CF} return t_CF;
+
+
 {OP_ADD} return t_ADD ;
 {OP_MUL} return t_MUL ;
 {OP_DIV} return t_DIV ;
@@ -55,18 +89,8 @@ char return t_CHAR ;
 "." return t_POINT ;
 "|" return t_OU ;
 "&" return t_ET_LOGIQUE ;
-{COMPAR} return t_COMPAR ;
-{NCOMPAR} return t_NCOMPAR;
-"<=" return t_INFERIEUR_OU_EGAL ;
-">=" return t_SUPERIEUR_OU_EGAL ;
-"<" return t_INFERIEUR ;
-">" return t_SUPERIEUR ;
-{AFEC} return t_EGAL ; 
 "!" return t_NEGATION ;
 "return" return t_RETURN ;
-\" return t_GUILLEMET ;
-{PV} return t_PV ;
-{VAR} return t_VAR ;
 
 
 %%
