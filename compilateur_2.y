@@ -9,6 +9,8 @@
 
     %}
 
+    #include "symboltable.h";
+
 
 %token t_MAIN  t_VIRGULE  t_PRINTF  t_WHILE  t_FOR  t_IF  
 t_INT  t_FLOAT  t_CHAR  t_CHIFFRE  t_PARENTHESE_OUVRANTE  t_PARENTHESE_FERMANTE  t_ACCOLADE_OUVRANTE   t_ACCOLADE_FERMANTE  
