@@ -7,5 +7,5 @@ comp: y.tab.o lex.yy.o
 y.tab.c:compilateur_2.y
 	yacc --verbose --debug compilateur_2.y
 
-lex.yy.c: compilateur_2.lex
-	lex compilateur_2.lex
+lex.yy.c: compilateur_2.l
+	lex compilateur_2.l
