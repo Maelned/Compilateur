@@ -40,8 +40,10 @@ OP_DIFF \-
 OP_MUL \*
 OP_DIV \/
 
+SPC [\t ]*
 TAB "\t"+
 EOF "\n"
+RETURN return
 PRINT printf
 
 
@@ -50,14 +52,14 @@ PRINT printf
 {TYPE_INT} return t_TINT;
 {TYPE_VOID} return t_VOID;
 
-{AFEC} return t_EGAL; 
+{AFFEC} return t_AFFEC; 
 {COMPAR} return t_COMPAR ;
 {NCOMPAR} return t_NCOMPAR;
 {INF} return t_INF;
 {INF_E} return t_INF_E;
 {SUP} return t_SUP;
 {SUP_E} return t_SUP_E;
-{TAB} return t_TAB;
+
 
 {CHAR} return t_CHAR;
 {INT} return t_INT;
@@ -69,7 +71,9 @@ PRINT printf
 {ELSE} return t_ELSE;
 {PV} return t_PV;
 {VIRG} return t_VIRG;
-{EOF} return t_EOF;
+{SPC} ;
+{TAB} ;
+{EOF} ;
 
 
 "\b"+ ;
@@ -86,11 +90,7 @@ PRINT printf
 {OP_MUL} return t_MUL ;
 {OP_DIV} return t_DIV ;
 {OP_DIFF} return t_DIFF ;
-"." return t_POINT ;
-"|" return t_OU ;
-"&" return t_ET_LOGIQUE ;
-"!" return t_NEGATION ;
-"return" return t_RETURN ;
+{RETURN} return t_RETURN ;
 
 
 %%

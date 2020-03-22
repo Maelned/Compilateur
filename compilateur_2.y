@@ -12,11 +12,11 @@
     #include "symboltable.h";
 
 
-%token t_MAIN  t_VIRG  t_PRINTF  t_WHILE  t_FOR  t_IF  
+%token t_MAIN  t_VIRG  t_PRINTF  t_WHILE  t_IF  t_ELSE t_TINT t_TCONST t_TVOID
 t_INT  t_FLOAT  t_CHAR  t_INT  t_PO  t_PF  t_AO   t_AF  
-t_TAB  t_ADD  t_MUL  t_DIV  t_MODULO  t_DIFF  t_POINT  t_OU  t_ET_LOGIQUE  t_TEST_EGALITE  
-t_INFERIEUR_OU_EGAL  t_SUPERIEUR_OU_EGAL  t_INFERIEUR  t_SUPERIEUR  t_EGAL   t_NEGATION  t_RETURN  
-t_GUILLEMET  t_PV  t_VAR
+t_TAB  t_ADD  t_MUL  t_DIV   t_DIFF t_COMPAR t_NCOMPAR  
+t_INF_E  t_SUP_E  t_INF  t_SUP  t_AFFEC    t_RETURN  
+t_GUILLEMET  t_PV  t_VAR t_STRING t_CHAR
 
 %right '='
 %left '+'  '-'
@@ -45,7 +45,7 @@ instruction :   affectation instruction {printf("affectation puis instruction\n"
                 | print  {printf("printf\n");}
                 ;
                 
-affectation :   t_VAR t_EGAL expression t_PV {printf("affectation\n");}
+affectation :   t_VAR t_AFFEC expression t_PV {printf("affectation\n");}
                 
                 ;
 
