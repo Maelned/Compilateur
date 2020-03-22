@@ -47,13 +47,13 @@ int get_address(const uint16_t id, uint16_t depth)
 }
 
 // check whether the symbol is initialized
-int is_initialized(const uint16_t* id, uint16_t depth)
+int is_initialized(const uint16_t id, uint16_t depth)
 {
     int addr = get_address(id, depth);
     return stack.entries[addr].init;
 }
 // check whether the symbol is a constant
-int is_constant(const uint16_t* id, uint16_t depth)
+int is_constant(const uint16_t id, uint16_t depth)
 {
     int addr = get_address(id, depth);
     return stack.entries[addr].constant;
@@ -64,7 +64,7 @@ int get_last_pointer(){
     return stack.pointer-1;
 }
 
-void set_initialized(const uint16_t* id, uint16_t depth)
+void set_initialized(const uint16_t id, uint16_t depth)
 {
     int addr = get_address(id, depth);
     stack.entries[addr].init = 1;

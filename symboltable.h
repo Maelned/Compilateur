@@ -1,6 +1,6 @@
 #ifndef SYMBOLTABLE_H
 #define SYMBOLTABLE_H
-
+#include <stdint.h>
 
 
 struct struct_symbol
@@ -13,12 +13,12 @@ struct struct_symbol
 
 typedef struct struct_symbol type_symbol;
 
-int add_symbol(const uint16_t*, int, uint16_t);
-int get_address(const uint16_t, uint8_t);
-int is_initialized(const uint8_t, uint8_t);
+int add_symbol(const uint16_t, int, uint16_t);
+int get_address(const uint16_t, uint16_t);
+int is_initialized(const uint16_t, uint16_t);
 int is_constant(const uint16_t, uint16_t);
 int get_last_pointer();
 void pop_symbol();
-void set_initialized(const uint8_t*, uint8_t);
+void set_initialized(const uint16_t, uint16_t);
 
 #endif

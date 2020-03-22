@@ -1,7 +1,9 @@
 %{
     int yydebug =0;
+    int depth = 0;
+    int constante = 0;
     #include <stdio.h>
-
+    #include "symboltable.h"
     int yyerror(char *s)
     {
         fprintf(stderr, "%s\n", s);
@@ -9,31 +11,45 @@
 
     %}
 
-    #include "symboltable.h";
+   
 
 
-%token t_MAIN  t_VIRG  t_PRINTF  t_WHILE  t_IF  t_ELSE t_TINT t_TCONST t_TVOID
-t_INT  t_FLOAT  t_CHAR  t_INT  t_PO  t_PF  t_AO   t_AF  
-t_TAB  t_ADD  t_MUL  t_DIV   t_DIFF t_COMPAR t_NCOMPAR  
+%token t_MAIN  t_VIRG  t_PRINTF  t_WHILE  t_IF  t_ELSE t_TINT  t_TVOID
+t_INT  t_FLOAT  t_CHAR  t_PO  t_PF  t_AO   t_AF t_CO t_CF
+t_TAB  t_ADD  t_MUL  t_DIV t_DIFF t_COMPAR t_NCOMPAR  
 t_INF_E  t_SUP_E  t_INF  t_SUP  t_AFFEC    t_RETURN  
-t_GUILLEMET  t_PV  t_VAR t_STRING t_CHAR
+t_GUILLEMET  t_PV  t_VAR t_STRING t_TCONST
+
+
+%union { 
+    int integer;
+    char identifier[256];
+
+};
+
+/* Déclarations de types */
+%type <integer> t_INT;
+%type <identifier> t_VAR;
+
+
 
 %right '='
 %left '+'  '-'
 %left '*'  '/'
-%start S
+%start declaration
 
 %% 
-S:  t_INT t_MAIN t_PO t_PF t_AO corps t_AF {printf("le début\n");}
-    | t_MAIN t_PO t_PF t_AO corps t_AF {printf("le début\n");}
+S:  type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
+    | t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
     ;
 corps :     declaration instruction //{printf("le corps du prog\n");}
             ;
-declaration :   type t_VAR t_PV declaration
-                | type t_VAR t_VIRGULE declaration_type
+declaration :   type t_VAR t_PV declaration {printf("type :%s , variable : ",$2);}
+                | type t_VAR t_VIRG declaration_type {printf("type : %s, variable : ",$2);}
+                | type t_VAR t_PV {printf("type : %s, variable : ",$2);}
                 ;
 
-declaration_type : t_VAR t_VIRGULE declaration_type
+declaration_type : t_VAR t_VIRG declaration_type
                     | t_VAR t_PV declaration
                     | t_VAR t_PV
 
@@ -43,19 +59,22 @@ instruction :   affectation instruction {printf("affectation puis instruction\n"
                 | affectation
                 | print instruction {printf("printf instruction\n");}
                 | print  {printf("printf\n");}
+                | si
                 ;
                 
 affectation :   t_VAR t_AFFEC expression t_PV {printf("affectation\n");}
                 
                 ;
 
-texte : t_VAR texte 
-        | t_VAR
-        ;
+
+si : t_IF t_PO cond t_PF t_AO {depth++;} declaration instruction t_AF {depth--;}
+
+cond :  expression comparateur expression 
+        | expression
 
         
 print : t_PRINTF t_PO t_VAR t_PF t_PV
-        | t_PRINTF t_PO t_GUILLEMET texte t_GUILLEMET t_VAR t_AF t_PV
+        | t_PRINTF t_PO t_STRING t_PF t_PV
 
 expression :    t_INT {printf("INT\n");}
                 |t_VAR {printf("VAR\n");}
@@ -67,13 +86,21 @@ expression :    t_INT {printf("INT\n");}
 operateur : t_ADD 
             | t_MUL 
             | t_DIV 
-            | t_MODULO 
             | t_DIFF
             ;
-type :  t_INT 
 
-        | t_FLOAT 
-        | t_CHAR {printf("operateur\n");}
+comparateur : t_COMPAR
+            | t_NCOMPAR
+            | t_INF
+            | t_INF_E
+            | t_SUP
+            | t_SUP_E
+            | t_AFFEC
+            ;
+
+type :     t_TINT   {constante = 0;} 
+        |  t_TCONST {constante = 1;} 
+        |  t_TVOID  {constante = 0;}
         ;
 
 %%

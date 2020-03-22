@@ -46,80 +46,94 @@ extern int yydebug;
   enum yytokentype
   {
     t_MAIN = 258,
-    t_VIRGULE = 259,
+    t_VIRG = 259,
     t_PRINTF = 260,
     t_WHILE = 261,
-    t_FOR = 262,
-    t_IF = 263,
-    t_INT = 264,
-    t_FLOAT = 265,
-    t_CHAR = 266,
-    t_CHIFFRE = 267,
-    t_PARENTHESE_OUVRANTE = 268,
-    t_PARENTHESE_FERMANTE = 269,
-    t_ACCOLADE_OUVRANTE = 270,
-    t_ACCOLADE_FERMANTE = 271,
-    t_TAB = 272,
-    t_ADDITION = 273,
-    t_MULTIPLICATION = 274,
-    t_DIVISION_ENTIERE = 275,
-    t_MODULO = 276,
-    t_SOUSTRACTION = 277,
-    t_POINT = 278,
-    t_OU = 279,
-    t_ET_LOGIQUE = 280,
-    t_TEST_EGALITE = 281,
-    t_INFERIEUR_OU_EGAL = 282,
-    t_SUPERIEUR_OU_EGAL = 283,
-    t_INFERIEUR = 284,
-    t_SUPERIEUR = 285,
-    t_EGAL = 286,
-    t_NEGATION = 287,
-    t_RETURN = 288,
-    t_GUILLEMET = 289,
-    t_POINT_VIRGULE = 290,
-    t_VARIABLE = 291
+    t_IF = 262,
+    t_ELSE = 263,
+    t_TINT = 264,
+    t_TVOID = 265,
+    t_INT = 266,
+    t_FLOAT = 267,
+    t_CHAR = 268,
+    t_PO = 269,
+    t_PF = 270,
+    t_AO = 271,
+    t_AF = 272,
+    t_CO = 273,
+    t_CF = 274,
+    t_TAB = 275,
+    t_ADD = 276,
+    t_MUL = 277,
+    t_DIV = 278,
+    t_DIFF = 279,
+    t_COMPAR = 280,
+    t_NCOMPAR = 281,
+    t_INF_E = 282,
+    t_SUP_E = 283,
+    t_INF = 284,
+    t_SUP = 285,
+    t_AFFEC = 286,
+    t_RETURN = 287,
+    t_GUILLEMET = 288,
+    t_PV = 289,
+    t_VAR = 290,
+    t_STRING = 291,
+    t_TCONST = 292
   };
 #endif
 /* Tokens.  */
 #define t_MAIN 258
-#define t_VIRGULE 259
+#define t_VIRG 259
 #define t_PRINTF 260
 #define t_WHILE 261
-#define t_FOR 262
-#define t_IF 263
-#define t_INT 264
-#define t_FLOAT 265
-#define t_CHAR 266
-#define t_CHIFFRE 267
-#define t_PARENTHESE_OUVRANTE 268
-#define t_PARENTHESE_FERMANTE 269
-#define t_ACCOLADE_OUVRANTE 270
-#define t_ACCOLADE_FERMANTE 271
-#define t_TAB 272
-#define t_ADDITION 273
-#define t_MULTIPLICATION 274
-#define t_DIVISION_ENTIERE 275
-#define t_MODULO 276
-#define t_SOUSTRACTION 277
-#define t_POINT 278
-#define t_OU 279
-#define t_ET_LOGIQUE 280
-#define t_TEST_EGALITE 281
-#define t_INFERIEUR_OU_EGAL 282
-#define t_SUPERIEUR_OU_EGAL 283
-#define t_INFERIEUR 284
-#define t_SUPERIEUR 285
-#define t_EGAL 286
-#define t_NEGATION 287
-#define t_RETURN 288
-#define t_GUILLEMET 289
-#define t_POINT_VIRGULE 290
-#define t_VARIABLE 291
+#define t_IF 262
+#define t_ELSE 263
+#define t_TINT 264
+#define t_TVOID 265
+#define t_INT 266
+#define t_FLOAT 267
+#define t_CHAR 268
+#define t_PO 269
+#define t_PF 270
+#define t_AO 271
+#define t_AF 272
+#define t_CO 273
+#define t_CF 274
+#define t_TAB 275
+#define t_ADD 276
+#define t_MUL 277
+#define t_DIV 278
+#define t_DIFF 279
+#define t_COMPAR 280
+#define t_NCOMPAR 281
+#define t_INF_E 282
+#define t_SUP_E 283
+#define t_INF 284
+#define t_SUP 285
+#define t_AFFEC 286
+#define t_RETURN 287
+#define t_GUILLEMET 288
+#define t_PV 289
+#define t_VAR 290
+#define t_STRING 291
+#define t_TCONST 292
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 24 "compilateur_2.y" /* yacc.c:1909  */
+ 
+    int integer;
+    char identifier[256];
+
+
+#line 134 "y.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif

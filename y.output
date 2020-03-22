@@ -1,19 +1,51 @@
+Non-terminaux inutiles dans la grammaire
+
+   S
+   $@1
+   $@2
+   corps
+   instruction
+   affectation
+   si
+   $@3
+   cond
+   print
+   expression
+   operateur
+   comparateur
+
+
 Terminaux inutilisés dans la grammaire
 
+   t_MAIN
+   t_PRINTF
    t_WHILE
-   t_FOR
    t_IF
+   t_ELSE
+   t_INT
+   t_FLOAT
+   t_CHAR
+   t_PO
+   t_PF
+   t_AO
+   t_AF
+   t_CO
+   t_CF
    t_TAB
-   t_POINT
-   t_OU
-   t_ET_LOGIQUE
-   t_TEST_EGALITE
-   t_INFERIEUR_OU_EGAL
-   t_SUPERIEUR_OU_EGAL
-   t_INFERIEUR
-   t_SUPERIEUR
-   t_NEGATION
+   t_ADD
+   t_MUL
+   t_DIV
+   t_DIFF
+   t_COMPAR
+   t_NCOMPAR
+   t_INF_E
+   t_SUP_E
+   t_INF
+   t_SUP
+   t_AFFEC
    t_RETURN
+   t_GUILLEMET
+   t_STRING
    '='
    '+'
    '-'
@@ -21,52 +53,70 @@ Terminaux inutilisés dans la grammaire
    '/'
 
 
-État 59 conflits: 5 décalage/réduction
+Règles inutiles dans la grammaire
+
+   10 $@1: %empty
+
+   11 S: type t_MAIN t_PO t_PF t_AO $@1 corps t_AF
+
+   12 $@2: %empty
+
+   13 S: t_MAIN t_PO t_PF t_AO $@2 corps t_AF
+
+   14 corps: declaration instruction
+
+   15 instruction: affectation instruction
+   16            | affectation
+   17            | print instruction
+   18            | print
+   19            | si
+
+   20 affectation: t_VAR t_AFFEC expression t_PV
+
+   21 $@3: %empty
+
+   22 si: t_IF t_PO cond t_PF t_AO $@3 declaration instruction t_AF
+
+   23 cond: expression comparateur expression
+   24     | expression
+
+   25 print: t_PRINTF t_PO t_VAR t_PF t_PV
+   26      | t_PRINTF t_PO t_STRING t_PF t_PV
+
+   27 expression: t_INT
+   28           | t_VAR
+   29           | t_PO expression t_PF
+   30           | expression operateur expression
+
+   31 operateur: t_ADD
+   32          | t_MUL
+   33          | t_DIV
+   34          | t_DIFF
+
+   35 comparateur: t_COMPAR
+   36            | t_NCOMPAR
+   37            | t_INF
+   38            | t_INF_E
+   39            | t_SUP
+   40            | t_SUP_E
+   41            | t_AFFEC
 
 
 Grammaire
 
-    0 $accept: S $end
+    0 $accept: declaration $end
 
-    1 S: t_INT t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
-    2  | t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
+    1 declaration: type t_VAR t_PV declaration
+    2            | type t_VAR t_VIRG declaration_type
+    3            | type t_VAR t_PV
 
-    3 corps: declaration instruction
+    4 declaration_type: t_VAR t_VIRG declaration_type
+    5                 | t_VAR t_PV declaration
+    6                 | t_VAR t_PV
 
-    4 declaration: type t_VARIABLE t_POINT_VIRGULE declaration
-    5            | type t_VARIABLE t_VIRGULE declaration_type
-
-    6 declaration_type: t_VARIABLE t_VIRGULE declaration_type
-    7                 | t_VARIABLE t_POINT_VIRGULE declaration
-    8                 | t_VARIABLE t_POINT_VIRGULE
-
-    9 instruction: affectation instruction
-   10            | affectation
-   11            | print instruction
-   12            | print
-
-   13 affectation: t_VARIABLE t_EGAL expression t_POINT_VIRGULE
-
-   14 texte: t_VARIABLE texte
-   15      | t_VARIABLE
-
-   16 print: t_PRINTF t_PARENTHESE_OUVRANTE t_VARIABLE t_PARENTHESE_FERMANTE t_POINT_VIRGULE
-   17      | t_PRINTF t_PARENTHESE_OUVRANTE t_GUILLEMET texte t_GUILLEMET t_VARIABLE t_ACCOLADE_FERMANTE t_POINT_VIRGULE
-
-   18 expression: t_CHIFFRE
-   19           | t_VARIABLE
-   20           | t_PARENTHESE_OUVRANTE expression t_PARENTHESE_FERMANTE
-   21           | expression operateur expression
-
-   22 operateur: t_ADDITION
-   23          | t_MULTIPLICATION
-   24          | t_DIVISION_ENTIERE
-   25          | t_MODULO
-   26          | t_SOUSTRACTION
-
-   27 type: t_INT
-   28     | t_FLOAT
-   29     | t_CHAR
+    7 type: t_TINT
+    8     | t_TCONST
+    9     | t_TVOID
 
 
 Terminaux, suivis des règles où ils apparaissent
@@ -78,631 +128,202 @@ $end (0) 0
 '/' (47)
 '=' (61)
 error (256)
-t_MAIN (258) 1 2
-t_VIRGULE (259) 5 6
-t_PRINTF (260) 16 17
+t_MAIN (258)
+t_VIRG (259) 2 4
+t_PRINTF (260)
 t_WHILE (261)
-t_FOR (262)
-t_IF (263)
-t_INT (264) 1 27
-t_FLOAT (265) 28
-t_CHAR (266) 29
-t_CHIFFRE (267) 18
-t_PARENTHESE_OUVRANTE (268) 1 2 16 17 20
-t_PARENTHESE_FERMANTE (269) 1 2 16 20
-t_ACCOLADE_OUVRANTE (270) 1 2
-t_ACCOLADE_FERMANTE (271) 1 2 17
-t_TAB (272)
-t_ADDITION (273) 22
-t_MULTIPLICATION (274) 23
-t_DIVISION_ENTIERE (275) 24
-t_MODULO (276) 25
-t_SOUSTRACTION (277) 26
-t_POINT (278)
-t_OU (279)
-t_ET_LOGIQUE (280)
-t_TEST_EGALITE (281)
-t_INFERIEUR_OU_EGAL (282)
-t_SUPERIEUR_OU_EGAL (283)
-t_INFERIEUR (284)
-t_SUPERIEUR (285)
-t_EGAL (286) 13
-t_NEGATION (287)
-t_RETURN (288)
-t_GUILLEMET (289) 17
-t_POINT_VIRGULE (290) 4 7 8 13 16 17
-t_VARIABLE (291) 4 5 6 7 8 13 14 15 16 17 19
+t_IF (262)
+t_ELSE (263)
+t_TINT (264) 7
+t_TVOID (265) 9
+t_INT (266)
+t_FLOAT (267)
+t_CHAR (268)
+t_PO (269)
+t_PF (270)
+t_AO (271)
+t_AF (272)
+t_CO (273)
+t_CF (274)
+t_TAB (275)
+t_ADD (276)
+t_MUL (277)
+t_DIV (278)
+t_DIFF (279)
+t_COMPAR (280)
+t_NCOMPAR (281)
+t_INF_E (282)
+t_SUP_E (283)
+t_INF (284)
+t_SUP (285)
+t_AFFEC (286)
+t_RETURN (287)
+t_GUILLEMET (288)
+t_PV (289) 1 3 5 6
+t_VAR (290) 1 2 3 4 5 6
+t_STRING (291)
+t_TCONST (292) 8
 
 
 Non-terminaux, suivis des règles où ils apparaissent
 
-$accept (42)
+$accept (43)
     à gauche: 0
-S (43)
-    à gauche: 1 2, à droite: 0
-corps (44)
-    à gauche: 3, à droite: 1 2
-declaration (45)
-    à gauche: 4 5, à droite: 3 4 7
-declaration_type (46)
-    à gauche: 6 7 8, à droite: 5 6
-instruction (47)
-    à gauche: 9 10 11 12, à droite: 3 9 11
-affectation (48)
-    à gauche: 13, à droite: 9 10
-texte (49)
-    à gauche: 14 15, à droite: 14 17
-print (50)
-    à gauche: 16 17, à droite: 11 12
-expression (51)
-    à gauche: 18 19 20 21, à droite: 13 20 21
-operateur (52)
-    à gauche: 22 23 24 25 26, à droite: 21
-type (53)
-    à gauche: 27 28 29, à droite: 4 5
+declaration (44)
+    à gauche: 1 2 3, à droite: 0 1 5
+declaration_type (45)
+    à gauche: 4 5 6, à droite: 2 4
+type (46)
+    à gauche: 7 8 9, à droite: 1 2 3
 
 
 État 0
 
-    0 $accept: . S $end
+    0 $accept: . declaration $end
 
-    t_MAIN  décalage et aller à l'état 1
-    t_INT   décalage et aller à l'état 2
+    t_TINT    décalage et aller à l'état 1
+    t_TVOID   décalage et aller à l'état 2
+    t_TCONST  décalage et aller à l'état 3
 
-    S  aller à l'état 3
+    declaration  aller à l'état 4
+    type         aller à l'état 5
 
 
 État 1
 
-    2 S: t_MAIN . t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
+    7 type: t_TINT .
 
-    t_PARENTHESE_OUVRANTE  décalage et aller à l'état 4
+    $défaut  réduction par utilisation de la règle 7 (type)
 
 
 État 2
 
-    1 S: t_INT . t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
+    9 type: t_TVOID .
 
-    t_MAIN  décalage et aller à l'état 5
+    $défaut  réduction par utilisation de la règle 9 (type)
 
 
 État 3
 
-    0 $accept: S . $end
+    8 type: t_TCONST .
 
-    $end  décalage et aller à l'état 6
+    $défaut  réduction par utilisation de la règle 8 (type)
 
 
 État 4
 
-    2 S: t_MAIN t_PARENTHESE_OUVRANTE . t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
+    0 $accept: declaration . $end
 
-    t_PARENTHESE_FERMANTE  décalage et aller à l'état 7
+    $end  décalage et aller à l'état 6
 
 
 État 5
 
-    1 S: t_INT t_MAIN . t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
+    1 declaration: type . t_VAR t_PV declaration
+    2            | type . t_VAR t_VIRG declaration_type
+    3            | type . t_VAR t_PV
 
-    t_PARENTHESE_OUVRANTE  décalage et aller à l'état 8
+    t_VAR  décalage et aller à l'état 7
 
 
 État 6
 
-    0 $accept: S $end .
+    0 $accept: declaration $end .
 
     $défaut  accepter
 
 
 État 7
 
-    2 S: t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE . t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
+    1 declaration: type t_VAR . t_PV declaration
+    2            | type t_VAR . t_VIRG declaration_type
+    3            | type t_VAR . t_PV
 
-    t_ACCOLADE_OUVRANTE  décalage et aller à l'état 9
+    t_VIRG  décalage et aller à l'état 8
+    t_PV    décalage et aller à l'état 9
 
 
 État 8
 
-    1 S: t_INT t_MAIN t_PARENTHESE_OUVRANTE . t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
+    2 declaration: type t_VAR t_VIRG . declaration_type
 
-    t_PARENTHESE_FERMANTE  décalage et aller à l'état 10
+    t_VAR  décalage et aller à l'état 10
+
+    declaration_type  aller à l'état 11
 
 
 État 9
 
-    2 S: t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE . corps t_ACCOLADE_FERMANTE
+    1 declaration: type t_VAR t_PV . declaration
+    3            | type t_VAR t_PV .
 
-    t_INT    décalage et aller à l'état 11
-    t_FLOAT  décalage et aller à l'état 12
-    t_CHAR   décalage et aller à l'état 13
+    t_TINT    décalage et aller à l'état 1
+    t_TVOID   décalage et aller à l'état 2
+    t_TCONST  décalage et aller à l'état 3
 
-    corps        aller à l'état 14
-    declaration  aller à l'état 15
-    type         aller à l'état 16
+    $défaut  réduction par utilisation de la règle 3 (declaration)
+
+    declaration  aller à l'état 12
+    type         aller à l'état 5
 
 
 État 10
 
-    1 S: t_INT t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE . t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE
+    4 declaration_type: t_VAR . t_VIRG declaration_type
+    5                 | t_VAR . t_PV declaration
+    6                 | t_VAR . t_PV
 
-    t_ACCOLADE_OUVRANTE  décalage et aller à l'état 17
+    t_VIRG  décalage et aller à l'état 13
+    t_PV    décalage et aller à l'état 14
 
 
 État 11
 
-   27 type: t_INT .
+    2 declaration: type t_VAR t_VIRG declaration_type .
 
-    $défaut  réduction par utilisation de la règle 27 (type)
+    $défaut  réduction par utilisation de la règle 2 (declaration)
 
 
 État 12
 
-   28 type: t_FLOAT .
+    1 declaration: type t_VAR t_PV declaration .
 
-    $défaut  réduction par utilisation de la règle 28 (type)
+    $défaut  réduction par utilisation de la règle 1 (declaration)
 
 
 État 13
 
-   29 type: t_CHAR .
+    4 declaration_type: t_VAR t_VIRG . declaration_type
 
-    $défaut  réduction par utilisation de la règle 29 (type)
+    t_VAR  décalage et aller à l'état 10
+
+    declaration_type  aller à l'état 15
 
 
 État 14
 
-    2 S: t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps . t_ACCOLADE_FERMANTE
+    5 declaration_type: t_VAR t_PV . declaration
+    6                 | t_VAR t_PV .
 
-    t_ACCOLADE_FERMANTE  décalage et aller à l'état 18
+    t_TINT    décalage et aller à l'état 1
+    t_TVOID   décalage et aller à l'état 2
+    t_TCONST  décalage et aller à l'état 3
+
+    $défaut  réduction par utilisation de la règle 6 (declaration_type)
+
+    declaration  aller à l'état 16
+    type         aller à l'état 5
 
 
 État 15
 
-    3 corps: declaration . instruction
+    4 declaration_type: t_VAR t_VIRG declaration_type .
 
-    t_PRINTF    décalage et aller à l'état 19
-    t_VARIABLE  décalage et aller à l'état 20
-
-    instruction  aller à l'état 21
-    affectation  aller à l'état 22
-    print        aller à l'état 23
+    $défaut  réduction par utilisation de la règle 4 (declaration_type)
 
 
 État 16
 
-    4 declaration: type . t_VARIABLE t_POINT_VIRGULE declaration
-    5            | type . t_VARIABLE t_VIRGULE declaration_type
+    5 declaration_type: t_VAR t_PV declaration .
 
-    t_VARIABLE  décalage et aller à l'état 24
-
-
-État 17
-
-    1 S: t_INT t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE . corps t_ACCOLADE_FERMANTE
-
-    t_INT    décalage et aller à l'état 11
-    t_FLOAT  décalage et aller à l'état 12
-    t_CHAR   décalage et aller à l'état 13
-
-    corps        aller à l'état 25
-    declaration  aller à l'état 15
-    type         aller à l'état 16
-
-
-État 18
-
-    2 S: t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE .
-
-    $défaut  réduction par utilisation de la règle 2 (S)
-
-
-État 19
-
-   16 print: t_PRINTF . t_PARENTHESE_OUVRANTE t_VARIABLE t_PARENTHESE_FERMANTE t_POINT_VIRGULE
-   17      | t_PRINTF . t_PARENTHESE_OUVRANTE t_GUILLEMET texte t_GUILLEMET t_VARIABLE t_ACCOLADE_FERMANTE t_POINT_VIRGULE
-
-    t_PARENTHESE_OUVRANTE  décalage et aller à l'état 26
-
-
-État 20
-
-   13 affectation: t_VARIABLE . t_EGAL expression t_POINT_VIRGULE
-
-    t_EGAL  décalage et aller à l'état 27
-
-
-État 21
-
-    3 corps: declaration instruction .
-
-    $défaut  réduction par utilisation de la règle 3 (corps)
-
-
-État 22
-
-    9 instruction: affectation . instruction
-   10            | affectation .
-
-    t_PRINTF    décalage et aller à l'état 19
-    t_VARIABLE  décalage et aller à l'état 20
-
-    $défaut  réduction par utilisation de la règle 10 (instruction)
-
-    instruction  aller à l'état 28
-    affectation  aller à l'état 22
-    print        aller à l'état 23
-
-
-État 23
-
-   11 instruction: print . instruction
-   12            | print .
-
-    t_PRINTF    décalage et aller à l'état 19
-    t_VARIABLE  décalage et aller à l'état 20
-
-    $défaut  réduction par utilisation de la règle 12 (instruction)
-
-    instruction  aller à l'état 29
-    affectation  aller à l'état 22
-    print        aller à l'état 23
-
-
-État 24
-
-    4 declaration: type t_VARIABLE . t_POINT_VIRGULE declaration
-    5            | type t_VARIABLE . t_VIRGULE declaration_type
-
-    t_VIRGULE        décalage et aller à l'état 30
-    t_POINT_VIRGULE  décalage et aller à l'état 31
-
-
-État 25
-
-    1 S: t_INT t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps . t_ACCOLADE_FERMANTE
-
-    t_ACCOLADE_FERMANTE  décalage et aller à l'état 32
-
-
-État 26
-
-   16 print: t_PRINTF t_PARENTHESE_OUVRANTE . t_VARIABLE t_PARENTHESE_FERMANTE t_POINT_VIRGULE
-   17      | t_PRINTF t_PARENTHESE_OUVRANTE . t_GUILLEMET texte t_GUILLEMET t_VARIABLE t_ACCOLADE_FERMANTE t_POINT_VIRGULE
-
-    t_GUILLEMET  décalage et aller à l'état 33
-    t_VARIABLE   décalage et aller à l'état 34
-
-
-État 27
-
-   13 affectation: t_VARIABLE t_EGAL . expression t_POINT_VIRGULE
-
-    t_CHIFFRE              décalage et aller à l'état 35
-    t_PARENTHESE_OUVRANTE  décalage et aller à l'état 36
-    t_VARIABLE             décalage et aller à l'état 37
-
-    expression  aller à l'état 38
-
-
-État 28
-
-    9 instruction: affectation instruction .
-
-    $défaut  réduction par utilisation de la règle 9 (instruction)
-
-
-État 29
-
-   11 instruction: print instruction .
-
-    $défaut  réduction par utilisation de la règle 11 (instruction)
-
-
-État 30
-
-    5 declaration: type t_VARIABLE t_VIRGULE . declaration_type
-
-    t_VARIABLE  décalage et aller à l'état 39
-
-    declaration_type  aller à l'état 40
-
-
-État 31
-
-    4 declaration: type t_VARIABLE t_POINT_VIRGULE . declaration
-
-    t_INT    décalage et aller à l'état 11
-    t_FLOAT  décalage et aller à l'état 12
-    t_CHAR   décalage et aller à l'état 13
-
-    declaration  aller à l'état 41
-    type         aller à l'état 16
-
-
-État 32
-
-    1 S: t_INT t_MAIN t_PARENTHESE_OUVRANTE t_PARENTHESE_FERMANTE t_ACCOLADE_OUVRANTE corps t_ACCOLADE_FERMANTE .
-
-    $défaut  réduction par utilisation de la règle 1 (S)
-
-
-État 33
-
-   17 print: t_PRINTF t_PARENTHESE_OUVRANTE t_GUILLEMET . texte t_GUILLEMET t_VARIABLE t_ACCOLADE_FERMANTE t_POINT_VIRGULE
-
-    t_VARIABLE  décalage et aller à l'état 42
-
-    texte  aller à l'état 43
-
-
-État 34
-
-   16 print: t_PRINTF t_PARENTHESE_OUVRANTE t_VARIABLE . t_PARENTHESE_FERMANTE t_POINT_VIRGULE
-
-    t_PARENTHESE_FERMANTE  décalage et aller à l'état 44
-
-
-État 35
-
-   18 expression: t_CHIFFRE .
-
-    $défaut  réduction par utilisation de la règle 18 (expression)
-
-
-État 36
-
-   20 expression: t_PARENTHESE_OUVRANTE . expression t_PARENTHESE_FERMANTE
-
-    t_CHIFFRE              décalage et aller à l'état 35
-    t_PARENTHESE_OUVRANTE  décalage et aller à l'état 36
-    t_VARIABLE             décalage et aller à l'état 37
-
-    expression  aller à l'état 45
-
-
-État 37
-
-   19 expression: t_VARIABLE .
-
-    $défaut  réduction par utilisation de la règle 19 (expression)
-
-
-État 38
-
-   13 affectation: t_VARIABLE t_EGAL expression . t_POINT_VIRGULE
-   21 expression: expression . operateur expression
-
-    t_ADDITION          décalage et aller à l'état 46
-    t_MULTIPLICATION    décalage et aller à l'état 47
-    t_DIVISION_ENTIERE  décalage et aller à l'état 48
-    t_MODULO            décalage et aller à l'état 49
-    t_SOUSTRACTION      décalage et aller à l'état 50
-    t_POINT_VIRGULE     décalage et aller à l'état 51
-
-    operateur  aller à l'état 52
-
-
-État 39
-
-    6 declaration_type: t_VARIABLE . t_VIRGULE declaration_type
-    7                 | t_VARIABLE . t_POINT_VIRGULE declaration
-    8                 | t_VARIABLE . t_POINT_VIRGULE
-
-    t_VIRGULE        décalage et aller à l'état 53
-    t_POINT_VIRGULE  décalage et aller à l'état 54
-
-
-État 40
-
-    5 declaration: type t_VARIABLE t_VIRGULE declaration_type .
-
-    $défaut  réduction par utilisation de la règle 5 (declaration)
-
-
-État 41
-
-    4 declaration: type t_VARIABLE t_POINT_VIRGULE declaration .
-
-    $défaut  réduction par utilisation de la règle 4 (declaration)
-
-
-État 42
-
-   14 texte: t_VARIABLE . texte
-   15      | t_VARIABLE .
-
-    t_VARIABLE  décalage et aller à l'état 42
-
-    $défaut  réduction par utilisation de la règle 15 (texte)
-
-    texte  aller à l'état 55
-
-
-État 43
-
-   17 print: t_PRINTF t_PARENTHESE_OUVRANTE t_GUILLEMET texte . t_GUILLEMET t_VARIABLE t_ACCOLADE_FERMANTE t_POINT_VIRGULE
-
-    t_GUILLEMET  décalage et aller à l'état 56
-
-
-État 44
-
-   16 print: t_PRINTF t_PARENTHESE_OUVRANTE t_VARIABLE t_PARENTHESE_FERMANTE . t_POINT_VIRGULE
-
-    t_POINT_VIRGULE  décalage et aller à l'état 57
-
-
-État 45
-
-   20 expression: t_PARENTHESE_OUVRANTE expression . t_PARENTHESE_FERMANTE
-   21           | expression . operateur expression
-
-    t_PARENTHESE_FERMANTE  décalage et aller à l'état 58
-    t_ADDITION             décalage et aller à l'état 46
-    t_MULTIPLICATION       décalage et aller à l'état 47
-    t_DIVISION_ENTIERE     décalage et aller à l'état 48
-    t_MODULO               décalage et aller à l'état 49
-    t_SOUSTRACTION         décalage et aller à l'état 50
-
-    operateur  aller à l'état 52
-
-
-État 46
-
-   22 operateur: t_ADDITION .
-
-    $défaut  réduction par utilisation de la règle 22 (operateur)
-
-
-État 47
-
-   23 operateur: t_MULTIPLICATION .
-
-    $défaut  réduction par utilisation de la règle 23 (operateur)
-
-
-État 48
-
-   24 operateur: t_DIVISION_ENTIERE .
-
-    $défaut  réduction par utilisation de la règle 24 (operateur)
-
-
-État 49
-
-   25 operateur: t_MODULO .
-
-    $défaut  réduction par utilisation de la règle 25 (operateur)
-
-
-État 50
-
-   26 operateur: t_SOUSTRACTION .
-
-    $défaut  réduction par utilisation de la règle 26 (operateur)
-
-
-État 51
-
-   13 affectation: t_VARIABLE t_EGAL expression t_POINT_VIRGULE .
-
-    $défaut  réduction par utilisation de la règle 13 (affectation)
-
-
-État 52
-
-   21 expression: expression operateur . expression
-
-    t_CHIFFRE              décalage et aller à l'état 35
-    t_PARENTHESE_OUVRANTE  décalage et aller à l'état 36
-    t_VARIABLE             décalage et aller à l'état 37
-
-    expression  aller à l'état 59
-
-
-État 53
-
-    6 declaration_type: t_VARIABLE t_VIRGULE . declaration_type
-
-    t_VARIABLE  décalage et aller à l'état 39
-
-    declaration_type  aller à l'état 60
-
-
-État 54
-
-    7 declaration_type: t_VARIABLE t_POINT_VIRGULE . declaration
-    8                 | t_VARIABLE t_POINT_VIRGULE .
-
-    t_INT    décalage et aller à l'état 11
-    t_FLOAT  décalage et aller à l'état 12
-    t_CHAR   décalage et aller à l'état 13
-
-    $défaut  réduction par utilisation de la règle 8 (declaration_type)
-
-    declaration  aller à l'état 61
-    type         aller à l'état 16
-
-
-État 55
-
-   14 texte: t_VARIABLE texte .
-
-    $défaut  réduction par utilisation de la règle 14 (texte)
-
-
-État 56
-
-   17 print: t_PRINTF t_PARENTHESE_OUVRANTE t_GUILLEMET texte t_GUILLEMET . t_VARIABLE t_ACCOLADE_FERMANTE t_POINT_VIRGULE
-
-    t_VARIABLE  décalage et aller à l'état 62
-
-
-État 57
-
-   16 print: t_PRINTF t_PARENTHESE_OUVRANTE t_VARIABLE t_PARENTHESE_FERMANTE t_POINT_VIRGULE .
-
-    $défaut  réduction par utilisation de la règle 16 (print)
-
-
-État 58
-
-   20 expression: t_PARENTHESE_OUVRANTE expression t_PARENTHESE_FERMANTE .
-
-    $défaut  réduction par utilisation de la règle 20 (expression)
-
-
-État 59
-
-   21 expression: expression . operateur expression
-   21           | expression operateur expression .
-
-    t_ADDITION          décalage et aller à l'état 46
-    t_MULTIPLICATION    décalage et aller à l'état 47
-    t_DIVISION_ENTIERE  décalage et aller à l'état 48
-    t_MODULO            décalage et aller à l'état 49
-    t_SOUSTRACTION      décalage et aller à l'état 50
-
-    t_ADDITION          [réduction par utilisation de la règle 21 (expression)]
-    t_MULTIPLICATION    [réduction par utilisation de la règle 21 (expression)]
-    t_DIVISION_ENTIERE  [réduction par utilisation de la règle 21 (expression)]
-    t_MODULO            [réduction par utilisation de la règle 21 (expression)]
-    t_SOUSTRACTION      [réduction par utilisation de la règle 21 (expression)]
-    $défaut            réduction par utilisation de la règle 21 (expression)
-
-    operateur  aller à l'état 52
-
-
-État 60
-
-    6 declaration_type: t_VARIABLE t_VIRGULE declaration_type .
-
-    $défaut  réduction par utilisation de la règle 6 (declaration_type)
-
-
-État 61
-
-    7 declaration_type: t_VARIABLE t_POINT_VIRGULE declaration .
-
-    $défaut  réduction par utilisation de la règle 7 (declaration_type)
-
-
-État 62
-
-   17 print: t_PRINTF t_PARENTHESE_OUVRANTE t_GUILLEMET texte t_GUILLEMET t_VARIABLE . t_ACCOLADE_FERMANTE t_POINT_VIRGULE
-
-    t_ACCOLADE_FERMANTE  décalage et aller à l'état 63
-
-
-État 63
-
-   17 print: t_PRINTF t_PARENTHESE_OUVRANTE t_GUILLEMET texte t_GUILLEMET t_VARIABLE t_ACCOLADE_FERMANTE . t_POINT_VIRGULE
-
-    t_POINT_VIRGULE  décalage et aller à l'état 64
-
-
-État 64
-
-   17 print: t_PRINTF t_PARENTHESE_OUVRANTE t_GUILLEMET texte t_GUILLEMET t_VARIABLE t_ACCOLADE_FERMANTE t_POINT_VIRGULE .
-
-    $défaut  réduction par utilisation de la règle 17 (print)
+    $défaut  réduction par utilisation de la règle 5 (declaration_type)
