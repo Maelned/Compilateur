@@ -57,12 +57,13 @@
 
 %union { 
     int entier;
-    char id[256];
+    char var[256];
 
 };
 
 /* Déclarations de types */
 %type <entier> t_INT;
+%type <entier> expression;
 %type <id> t_VAR;
 
 
