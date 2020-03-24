@@ -8,8 +8,17 @@
     {
         fprintf(stderr, "%s\n", s);
     }
+    void affectation(char *var){
+     printf("affectation de %s par une expr\n", ident);
+    int last_adr = get_last_pointer();
+    int var_adr  = get_address(var, depth);
+    save_line("READ R1, %d", adr_last);
+    save_line("SAVE R1, %d", adr_var);
 
-    %}
+    set_initialized(adr_last, scope_depth);
+    }
+
+%}
 
    
 
@@ -36,7 +45,7 @@ t_GUILLEMET  t_PV  t_VAR t_STRING t_TCONST
 %right '='
 %left '+'  '-'
 %left '*'  '/'
-%start declaration
+%start S
 
 %% 
 S:  type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
@@ -44,15 +53,12 @@ S:  type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
     ;
 corps :     declaration instruction //{printf("le corps du prog\n");}
             ;
-declaration :   type t_VAR t_PV declaration {printf("type :%s , variable : ",$2);}
-                | type t_VAR t_VIRG declaration_type {printf("type : %s, variable : ",$2);}
-                | type t_VAR t_PV {printf("type : %s, variable : ",$2);}
+declaration :   type t_VAR {add_symbol($2,constante,depth)} declaration_type 
                 ;
 
-declaration_type : t_VAR t_VIRG declaration_type
-                    | t_VAR t_PV declaration
-                    | t_VAR t_PV
-
+declaration_type : t_VIRG t_VAR {add_symbol($2,constante,depth)} declaration_type
+                    | t_PV declaration
+                    | t_PV
                 ;
 
 instruction :   affectation instruction {printf("affectation puis instruction\n");}
@@ -67,7 +73,7 @@ affectation :   t_VAR t_AFFEC expression t_PV {printf("affectation\n");}
                 ;
 
 
-si : t_IF t_PO cond t_PF t_AO {depth++;} declaration instruction t_AF {depth--;}
+si : t_IF t_PO cond t_PF t_AO {depth++;} corps t_AF {depth--;}
 
 cond :  expression comparateur expression 
         | expression
