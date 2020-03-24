@@ -21,7 +21,7 @@ void return t_TVOID;
 \> return t_SUP;
 \>\= return t_SUP_E;
 \'.\' return t_CHAR;
-[0-9]+ {strcpy(yylval.np, atof(yytext)); return t_INT;}
+[0-9]+ {strcpy(yylval.entier, atof(yytext)); return t_INT;}
 \".*\" return t_STRING;
 main return t_MAIN;
 printf return t_PRINTF;

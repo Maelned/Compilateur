@@ -2,22 +2,31 @@
     int yydebug =0;
     int depth = 0;
     int constante = 0;
+    int nb_tmp_symbol = 0;
     #include <stdio.h>
     #include "symboltable.h"
     int yyerror(char *s)
     {
         fprintf(stderr, "%s\n", s);
     }
-    void affectation(char *var){
+    void affectation(char *var,int nb){
      printf("affectation de %s par une expr\n", ident);
-    int last_adr = get_last_pointer();
-    int var_adr  = get_address(var, depth);
-    save_line("READ R1, %d", adr_last);
-    save_line("SAVE R1, %d", adr_var);
+    int last_addr = get_last_pointer();
+    int var_addr  = get_address(var, depth);
+    printf("AFC @var : %d nb : %d",var_addr,nb)
 
-    set_initialized(adr_last, scope_depth);
+    set_initialized(adr_last, depth);
     }
 
+    int tmp_affec(int nb){
+        int tmp_addr = add_tmp_symbol(get_end_pointer(),constante,depth);
+        printf("AFC @var : %d nb : %d",tmp_addr,nb);
+        set_initialized(tmp_addr, depth);
+        return tmp_addr
+
+    }
+
+    
 %}
 %token t_MAIN  
 %token t_VIRG  
@@ -96,7 +105,7 @@ instruction:   affectation instruction {printf("affectation puis instruction\n")
                 | si
                 ;
                 
-affectation:   t_VAR t_AFFEC expression t_PV {printf("affectation\n");}
+affectation:   t_VAR t_AFFEC expression t_PV 
                 
                 ;
 
@@ -116,7 +125,15 @@ print:  t_PRINTF t_PO t_VAR t_PF t_PV
 expression: t_INT {printf("INT\n");}
             |t_VAR {printf("VAR\n");}
             |t_PO expression t_PF {printf("2e ex\n");}
-            |expression operateur expression  {printf("expression\n");}
+            |expression t_ADD expression 
+                {operation("ADD");}
+            |expression t_MUL expression 
+                {operation("MUL");}
+            |expression t_DIV expression
+                {operation("DIV");} 
+            |expression t_DIFF expression 
+                {operation("SOU");}
+
             ;
 
 operateur:  t_ADD 

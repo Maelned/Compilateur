@@ -15,7 +15,7 @@ struct struct_table
 typedef struct struct_table type_table;
 
 type_table stack = {0};
-
+int end_pointer_stack = SIZE_TAB - 1;
 
 // add the symbol to the table with id, depth and whether it is a constant or not
 int add_symbol(const int id, int cons, int depth)
@@ -27,6 +27,19 @@ int add_symbol(const int id, int cons, int depth)
     new_symbol->depth = depth;
 
     stack.pointer++;
+
+    return stack.pointer - 1;
+}
+
+int add_tmp_symbol(const int id, int cons, int depth)
+{
+    type_symbol * new_symbol = &(stack.entries[end_pointer_stack]);
+    
+    strcpy(new_symbol->id, id);
+    new_symbol->constant = cons;
+    new_symbol->initialized = 0;
+    new_symbol->depth = depth;
+    end_pointer_stack--;
 
     return stack.pointer - 1;
 }
@@ -59,9 +72,18 @@ int is_constant(const int id, int depth)
     return stack.entries[addr].constant;
 }
 
+void clear_tmp_symbol(int nb_tmp_symbol){
+    end_pointer_stack = end_pointer_stack + nb_tmp_symbol;
+}
+
+
 // check whether the symbol is a constant
 int get_last_pointer(){
     return stack.pointer-1;
+}
+
+int get_end_pointer(){
+    return end_pointer_stack;
 }
 
 void set_initialized(const int id, int depth)
