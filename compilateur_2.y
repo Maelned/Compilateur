@@ -2,20 +2,21 @@
     int yydebug =0;
     int depth = 0;
     int constante = 0;
-    int nb_tmp_symbol = 0;
+    int cpt_tmp_symbol = 0;
+
     #include <stdio.h>
     #include "symboltable.h"
     int yyerror(char *s)
     {
         fprintf(stderr, "%s\n", s);
     }
-    void affectation(char *var,int nb){
-     printf("affectation de %s par une expr\n", ident);
-    int last_addr = get_last_pointer();
-    int var_addr  = get_address(var, depth);
-    printf("AFC @var : %d nb : %d",var_addr,nb)
+    void affectation(char *var,int addr_tmp){
+    printf("affectation de %s par une expr\n", var);
 
-    set_initialized(adr_last, depth);
+    int var_addr  = get_address(var, depth);
+    printf("COP @var : %d @nb : %d",var_addr,addr_tmp)
+
+    set_initialized(var_addr, depth);
     }
 
     int tmp_affec(int nb){
@@ -23,7 +24,11 @@
         printf("AFC @var : %d nb : %d",tmp_addr,nb);
         set_initialized(tmp_addr, depth);
         return tmp_addr
-
+    }
+    int operation(int addr1,char * op,int addr2){
+        int addr_return = add_tmp_sumbol(get_end_pointer(),constante,depth);
+        printf("%s @ret : %d @exp1 : %d @exp2 : %d",op,addr_return,addr1,addr2);
+        return addr_return
     }
 
     
@@ -105,8 +110,12 @@ instruction:   affectation instruction {printf("affectation puis instruction\n")
                 | si
                 ;
                 
-affectation:   t_VAR t_AFFEC expression t_PV 
-                
+affectation:   t_VAR t_AFFEC expression 
+                {
+                    affectation($1,$3);
+                    clear_tmp_symbol(cpt_tmp_symbol);
+                } 
+                t_PV 
                 ;
 
 
@@ -122,17 +131,36 @@ print:  t_PRINTF t_PO t_VAR t_PF t_PV
         | t_PRINTF t_PO t_STRING t_PF t_PV
         ;
 
-expression: t_INT {printf("INT\n");}
-            |t_VAR {printf("VAR\n");}
-            |t_PO expression t_PF {printf("2e ex\n");}
-            |expression t_ADD expression 
-                {operation("ADD");}
+expression: t_INT 
+            {
+                int addr_tmp = tmp_affec($1);
+                cpt_tmp_symbol++; 
+                $$ = addr_tmp;
+            }
+
+            |t_VAR {$$ = get_address($1,depth);}
+
+            |t_PO expression t_PF
+
+            |expression t_ADD expression
+                {
+                    $$ = operation($1,"ADD",$3);
+                }
+
             |expression t_MUL expression 
-                {operation("MUL");}
+                {
+                    $$ = operation($1,"MUL",$3);
+                }
+
             |expression t_DIV expression
-                {operation("DIV");} 
+                {
+                    $$ = operation($1,"DIV",$3);
+                } 
+
             |expression t_DIFF expression 
-                {operation("SOU");}
+                {
+                    $$ = operation($1,"DIFF",$3);
+                }
 
             ;
 

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define SIZE_TAB 100
+#define SIZE_TAB 256
 
 struct struct_table
 {
