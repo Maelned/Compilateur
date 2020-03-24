@@ -843,7 +843,7 @@ return t_CHAR;
 case 15:
 YY_RULE_SETUP
 #line 24 "compilateur_2.l"
-return t_INT;
+{strcpy(yylval.entier, atoi(yytext)); return t_INT;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
@@ -878,7 +878,7 @@ return t_RETURN ;
 case 22:
 YY_RULE_SETUP
 #line 31 "compilateur_2.l"
-strcpy(yylval.identifier, yytext); return t_VAR;
+strcpy(yylval.var, yytext); return t_VAR;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP

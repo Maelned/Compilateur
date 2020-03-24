@@ -11,24 +11,25 @@
         fprintf(stderr, "%s\n", s);
     }
     void affectation(char *var,int addr_tmp){
-    printf("affectation de %s par une expr\n", var);
+        printf("affectation de %s par une expr\n", var);
 
-    int var_addr  = get_address(var, depth);
-    printf("COP @var : %d @nb : %d",var_addr,addr_tmp)
+        int var_addr  = get_address(var, depth);
+        printf("COP @var : %d @nb : %d",var_addr,addr_tmp);
 
-    set_initialized(var_addr, depth);
+        set_initialized(var_addr, depth);
     }
 
     int tmp_affec(int nb){
-        int tmp_addr = add_tmp_symbol(get_end_pointer(),constante,depth);
+        int tmp_addr = add_tmp_symbol((char *)get_end_pointer(),constante,depth);
         printf("AFC @var : %d nb : %d",tmp_addr,nb);
         set_initialized(tmp_addr, depth);
-        return tmp_addr
+        return tmp_addr;
     }
+
     int operation(int addr1,char * op,int addr2){
-        int addr_return = add_tmp_sumbol(get_end_pointer(),constante,depth);
+        int addr_return = add_tmp_symbol((char *)get_end_pointer(),constante,depth);
         printf("%s @ret : %d @exp1 : %d @exp2 : %d",op,addr_return,addr1,addr2);
-        return addr_return
+        return addr_return;
     }
 
     
@@ -78,7 +79,7 @@
 /* Déclarations de types */
 %type <entier> t_INT;
 %type <entier> expression;
-%type <id> t_VAR;
+%type <var> t_VAR;
 
 
 
@@ -94,10 +95,10 @@ S:  type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
 corps:     declaration instruction //{printf("le corps du prog\n");}
             ;
 
-declaration:   type t_VAR {add_symbol($2,constante,depth)} declaration_type 
+declaration:   type t_VAR {printf("%d",get_last_pointer());} declaration_type 
                 ;
 
-declaration_type: t_VIRG t_VAR {add_symbol($2,constante,depth)} declaration_type
+declaration_type: t_VIRG t_VAR {add_symbol($2,constante,depth);} declaration_type
                     | t_PV declaration
                     | t_PV
 
@@ -162,12 +163,6 @@ expression: t_INT
                     $$ = operation($1,"DIFF",$3);
                 }
 
-            ;
-
-operateur:  t_ADD 
-            | t_MUL 
-            | t_DIV 
-            | t_DIFF
             ;
 
 comparateur: t_COMPAR

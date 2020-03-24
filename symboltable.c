@@ -9,7 +9,7 @@
 struct struct_table
 {
     int pointer;
-    table_symbol entries[SIZE_TAB];
+    type_symbol entries[SIZE_TAB];
 };
 
 typedef struct struct_table type_table;
@@ -18,26 +18,27 @@ type_table stack = {0};
 int end_pointer_stack = SIZE_TAB - 1;
 
 // add the symbol to the table with id, depth and whether it is a constant or not
-int add_symbol(const int id, int cons, int depth)
+int add_symbol(char * id, int cons, int depth)
 {
+    printf("ajout symbole");
     type_symbol * new_symbol = &(stack.entries[stack.pointer]);
     strcpy(new_symbol->id, id);
     new_symbol->constant = cons;
-    new_symbol->initialized = 0;
+    new_symbol->init = 0;
     new_symbol->depth = depth;
-
+    printf("ajout symbole");
     stack.pointer++;
 
     return stack.pointer - 1;
 }
 
-int add_tmp_symbol(const int id, int cons, int depth)
+int add_tmp_symbol(char * id, int cons, int depth)
 {
     type_symbol * new_symbol = &(stack.entries[end_pointer_stack]);
     
     strcpy(new_symbol->id, id);
     new_symbol->constant = cons;
-    new_symbol->initialized = 0;
+    new_symbol->init = 0;
     new_symbol->depth = depth;
     end_pointer_stack--;
 
@@ -45,7 +46,7 @@ int add_tmp_symbol(const int id, int cons, int depth)
 }
 
 // return the address of the symbol (id)
-int get_address(const int id, int depth)
+int get_address(char * id, int depth)
 {
     for(int i=0; i<stack.pointer; i++)
     {
@@ -60,13 +61,13 @@ int get_address(const int id, int depth)
 }
 
 // check whether the symbol is initialized
-int is_initialized(const int id, int depth)
+int is_initialized(char * id, int depth)
 {
     int addr = get_address(id, depth);
     return stack.entries[addr].init;
 }
 // check whether the symbol is a constant
-int is_constant(const int id, int depth)
+int is_constant(char * id, int depth)
 {
     int addr = get_address(id, depth);
     return stack.entries[addr].constant;
@@ -86,7 +87,7 @@ int get_end_pointer(){
     return end_pointer_stack;
 }
 
-void set_initialized(const int id, int depth)
+void set_initialized(char * id, int depth)
 {
     int addr = get_address(id, depth);
     stack.entries[addr].init = 1;

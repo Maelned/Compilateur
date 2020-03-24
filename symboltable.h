@@ -5,7 +5,7 @@
 
 struct struct_symbol
 {
-    int id;
+    char * id;
     int constant;
     int init;
     int depth;
@@ -13,14 +13,15 @@ struct struct_symbol
 
 typedef struct struct_symbol type_symbol;
 
-int add_symbol(const int, int, int);
-int add_tmp_symbol(const int, int, int);
-int get_address(const int, int);
-int is_initialized(const int, int);
-int is_constant(const int, int);
+int add_symbol(char *, int, int);
+int add_tmp_symbol(char *, int, int);
+int get_address(char *, int);
+int is_initialized(char *, int);
+int is_constant(char *, int);
 int get_last_pointer();
 int get_end_pointer();
+void clear_tmp_symbol(int);
 void pop_symbol();
-void set_initialized(const int, int);
+void set_initialized(char *, int);
 
 #endif

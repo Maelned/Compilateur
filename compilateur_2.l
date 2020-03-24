@@ -21,14 +21,14 @@ void return t_TVOID;
 \> return t_SUP;
 \>\= return t_SUP_E;
 \'.\' return t_CHAR;
-[0-9]+ {strcpy(yylval.entier, atof(yytext)); return t_INT;}
+[0-9]+ {strcpy(yylval.entier, atoi(yytext)); return t_INT;}
 \".*\" return t_STRING;
 main return t_MAIN;
 printf return t_PRINTF;
 if return t_IF;
 else return t_ELSE;
 return return t_RETURN ;
-[a-zA-Z][a-zA-Z0-9_]* strcpy(yylval.identifier, yytext); return t_VAR;
+[a-zA-Z][a-zA-Z0-9_]* strcpy(yylval.var, yytext); return t_VAR;
 
 \; return t_PV;
 \, return t_VIRG;
