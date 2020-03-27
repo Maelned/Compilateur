@@ -5,7 +5,7 @@
 
 struct struct_symbol
 {
-    char * id;
+    char id[50];
     int constant;
     int init;
     int depth;

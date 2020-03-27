@@ -3,6 +3,7 @@
     int depth = 0;
     int constante = 0;
     int cpt_tmp_symbol = 0;
+    char Buffer[50];
 
     #include <stdio.h>
     #include "symboltable.h"
@@ -10,19 +11,20 @@
     {
         fprintf(stderr, "%s\n", s);
     }
-    void affectation(char *var,int addr_tmp){
+    void affectation(char * var,int addr_tmp){
         printf("affectation de %s par une expr\n", var);
 
         int var_addr  = get_address(var, depth);
-        printf("COP @var : %d @nb : %d",var_addr,addr_tmp);
+        printf("COP @var : %d @nb : %d\n",var_addr,addr_tmp);
 
-        set_initialized(var_addr, depth);
+        set_initialized(var, depth);
     }
 
     int tmp_affec(int nb){
-        int tmp_addr = add_tmp_symbol((char *)get_end_pointer(),constante,depth);
-        printf("AFC @var : %d nb : %d",tmp_addr,nb);
-        set_initialized(tmp_addr, depth);
+        printf("Tentative affec tmp\n");
+        sprintf(Buffer,"%d",get_end_pointer());
+        int tmp_addr = add_tmp_symbol(Buffer,constante,depth);
+        printf("AFC @var : %d nb : %d\n",tmp_addr,nb);
         return tmp_addr;
     }
 
@@ -72,11 +74,19 @@
 
 %union { 
     int entier;
-    char var[256];
+    char * var;
 
 };
 
 /* Déclarations de types */
+/*  |t_PO expression  
+            {
+                int a ddr_tmp = tmp_affec($2);
+                cpt_tmp_symbol++; 
+                $$ = addr_tmp;
+            }
+            t_PF*/
+
 %type <entier> t_INT;
 %type <entier> expression;
 %type <var> t_VAR;
@@ -95,11 +105,11 @@ S:  type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
 corps:     declaration instruction //{printf("le corps du prog\n");}
             ;
 
-declaration:   type t_VAR {printf("%d",get_last_pointer());} declaration_type 
+declaration:   type t_VAR {add_symbol($2,constante,depth);} declaration_type
                 ;
 
 declaration_type: t_VIRG t_VAR {add_symbol($2,constante,depth);} declaration_type
-                    | t_PV declaration
+                    | t_PV declaration 
                     | t_PV
 
 
@@ -113,6 +123,7 @@ instruction:   affectation instruction {printf("affectation puis instruction\n")
                 
 affectation:   t_VAR t_AFFEC expression 
                 {
+                    printf("affec @1 : %d  @2 : %d\n",get_address($1,depth),$3);
                     affectation($1,$3);
                     clear_tmp_symbol(cpt_tmp_symbol);
                 } 
@@ -132,16 +143,16 @@ print:  t_PRINTF t_PO t_VAR t_PF t_PV
         | t_PRINTF t_PO t_STRING t_PF t_PV
         ;
 
-expression: t_INT 
-            {
+expression: t_INT
+            {   
                 int addr_tmp = tmp_affec($1);
                 cpt_tmp_symbol++; 
                 $$ = addr_tmp;
             }
 
-            |t_VAR {$$ = get_address($1,depth);}
+            |{printf("aaa");} t_VAR {$$ = get_address($2,depth);}
 
-            |t_PO expression t_PF
+            
 
             |expression t_ADD expression
                 {
@@ -158,9 +169,9 @@ expression: t_INT
                     $$ = operation($1,"DIV",$3);
                 } 
 
-            |expression t_DIFF expression 
+            |{printf ("diff");}expression t_DIFF expression 
                 {
-                    $$ = operation($1,"DIFF",$3);
+                    $$ = operation($2,"DIFF",$4);
                 }
 
             ;

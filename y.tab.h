@@ -124,10 +124,10 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 73 "compilateur_2.y" /* yacc.c:1909  */
+#line 75 "compilateur_2.y" /* yacc.c:1909  */
  
     int entier;
-    char var[256];
+    char * var;
 
 
 #line 134 "y.tab.h" /* yacc.c:1909  */

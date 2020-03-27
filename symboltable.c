@@ -15,34 +15,36 @@ struct struct_table
 typedef struct struct_table type_table;
 
 type_table stack = {0};
+
 int end_pointer_stack = SIZE_TAB - 1;
 
 // add the symbol to the table with id, depth and whether it is a constant or not
 int add_symbol(char * id, int cons, int depth)
 {
-    printf("ajout symbole");
     type_symbol * new_symbol = &(stack.entries[stack.pointer]);
     strcpy(new_symbol->id, id);
     new_symbol->constant = cons;
     new_symbol->init = 0;
     new_symbol->depth = depth;
-    printf("ajout symbole");
+    printf("ajout du symbole : %s à l'@ : %d \n",stack.entries[stack.pointer].id,stack.pointer);
+    
+   /* printf("affichage symbole ajouté : @ : %d | id : %s | ",get_address(id,depth),new_symbol -> id);
+    printf("const : %d | init : %d | depth : %d\n",new_symbol->constant,new_symbol->init,new_symbol->depth);*/
     stack.pointer++;
-
     return stack.pointer - 1;
 }
 
 int add_tmp_symbol(char * id, int cons, int depth)
 {
     type_symbol * new_symbol = &(stack.entries[end_pointer_stack]);
-    
     strcpy(new_symbol->id, id);
     new_symbol->constant = cons;
     new_symbol->init = 0;
     new_symbol->depth = depth;
+    printf("ajout  symbole temporaire à l'@ : %d \n",end_pointer_stack);
     end_pointer_stack--;
 
-    return stack.pointer - 1;
+    return end_pointer_stack + 1;
 }
 
 // return the address of the symbol (id)
@@ -51,9 +53,13 @@ int get_address(char * id, int depth)
     for(int i=0; i<stack.pointer; i++)
     {
         type_symbol *current_symbol = &(stack.entries[i]);
-        if(current_symbol->depth == depth)
-            if(!strcmp(current_symbol->id, id))
+        if(current_symbol->depth == depth){
+            if(!strcmp(current_symbol->id, id)){
                 return i;
+            }
+                
+        }
+          
     }
 
     /* inexistent symbol */
