@@ -124,7 +124,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 75 "compilateur_2.y" /* yacc.c:1909  */
+#line 109 "compilateur_2.y" /* yacc.c:1909  */
  
     int entier;
     char * var;

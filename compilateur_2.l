@@ -27,6 +27,7 @@ main return t_MAIN;
 printf return t_PRINTF;
 if return t_IF;
 else return t_ELSE;
+while return t_WHILE;
 return return t_RETURN ;
 [a-zA-Z][a-zA-Z0-9_]* {yylval.var = strdup(yytext); return t_VAR;}
 

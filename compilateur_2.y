@@ -1,36 +1,70 @@
 %{
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include "symboltable.h"
+    #include "asm.h"
+
     int yydebug =0;
     int depth = 0;
     int constante = 0;
     int cpt_tmp_symbol = 0;
     char Buffer[50];
 
-    #include <stdio.h>
-    #include "symboltable.h"
+
+   
+    void clean_file(){
+        FILE * fichier = fopen("./assembly.txt","w");
+        fputs("",fichier);
+        fclose(fichier);
+    }
+
+    void insert_file(char * code_assembleur){
+        FILE * fichier = fopen("./assembly.txt","a");
+        
+        if(fichier != NULL){
+            fputs(code_assembleur, fichier);
+            fclose(fichier);
+        }
+        else{
+        }
+    
+    }
     int yyerror(char *s)
     {
         fprintf(stderr, "%s\n", s);
     }
     void affectation(char * var,int addr_tmp){
-        printf("affectation de %s par une expr\n", var);
-
         int var_addr  = get_address(var, depth);
-        printf("COP @var : %d @nb : %d\n",var_addr,addr_tmp);
+        char * assembly = malloc(100 * sizeof(char));
+        sprintf(assembly,"COP @%d @%d\n",var_addr,addr_tmp);
+        
+        insert_file(assembly);
+        add_asm("COP",var_addr,addr_tmp,-1);
 
         set_initialized(var, depth);
     }
 
     int tmp_affec(int nb){
-        printf("Tentative affec tmp\n");
+        cpt_tmp_symbol++; 
         sprintf(Buffer,"%d",get_end_pointer());
         int tmp_addr = add_tmp_symbol(Buffer,constante,depth);
-        printf("AFC @var : %d nb : %d\n",tmp_addr,nb);
+        char * assembly = malloc(100 * sizeof(char));
+        sprintf(assembly,"AFC @%d %d\n",tmp_addr,nb);
+        insert_file(assembly);
+        add_asm("AFC",tmp_addr,nb,-1);
         return tmp_addr;
     }
 
     int operation(int addr1,char * op,int addr2){
-        int addr_return = add_tmp_symbol((char *)get_end_pointer(),constante,depth);
-        printf("%s @ret : %d @exp1 : %d @exp2 : %d",op,addr_return,addr1,addr2);
+        sprintf(Buffer,"%d",get_end_pointer());
+        int addr_return = add_tmp_symbol(Buffer,constante,depth);
+        printf("%s @ret : %d @exp1 : %d @exp2 : %d\n",op,addr_return,addr1,addr2);
+
+        char * assembly = malloc(100 * sizeof(char));
+        sprintf(assembly,"%s @%d @%d @%d\n",op,addr_return,addr1,addr2);
+
+        insert_file(assembly);
+        add_asm(op,addr_return,addr1,addr2);
         return addr_return;
     }
 
@@ -40,7 +74,7 @@
 %token t_VIRG  
 %token t_PRINTF  
 %token t_WHILE  
-%token t_IF  
+%token t_IF
 %token t_ELSE 
 %token t_TINT  
 %token t_TVOID
@@ -89,6 +123,10 @@
 
 %type <entier> t_INT;
 %type <entier> expression;
+%type <entier> ifblock;
+%type <entier> ifblock1;
+%type <entier> t_IF;
+%type <entier> t_ELSE;
 %type <var> t_VAR;
 
 
@@ -99,7 +137,7 @@
 %start S
 
 %% 
-S:  type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
+S:  {clean_file();}type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--; print_assembly();}
     | t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
     ;
 corps:     declaration instruction //{printf("le corps du prog\n");}
@@ -118,25 +156,49 @@ instruction:   affectation instruction {printf("affectation puis instruction\n")
                 | affectation
                 | print instruction {printf("printf instruction\n");}
                 | print  {printf("printf\n");}
-                | si
+                | ifblock
+                | ifblock instruction
+                | whileblock
+                | whileblock instruction
                 ;
                 
 affectation:   t_VAR t_AFFEC expression 
                 {
-                    printf("affec @1 : %d  @2 : %d\n",get_address($1,depth),$3);
                     affectation($1,$3);
                     clear_tmp_symbol(cpt_tmp_symbol);
+                    cpt_tmp_symbol = 0;
                 } 
                 t_PV 
                 ;
 
-
-si : t_IF t_PO cond t_PF t_AO {depth++;} corps t_AF {depth--;}
-
-
-cond:  expression comparateur expression 
-        | expression
+corpsfct:declaration instruction
+        |instruction
         ;
+
+ifblock:
+    ifblock1
+        {patch_JMF($1, get_nb_line_asm()); // on veut que JMF saute ici, la fin de if-(sans else)
+        }
+    | ifblock1 t_ELSE
+        {$2 = add_asm("JMP", -1, -1, -1);                     // la fin de if, on veut sauter à la fin de else (ligneY)
+        patch_JMF($1, get_nb_line_asm()+1);  // ligneX, le début de else, on veut que JMF saute ici.
+        }
+    t_AO instruction t_AF
+        {patch_JMP($2, get_nb_line_asm()+1); // ligneY, la fin de else
+        }
+    ;
+
+ifblock1:
+    t_IF t_PO expression
+        {$1 = add_asm("JMF", $3,-1, -1);     // on renvoie la ligne JMF; on veut sauter à la fin de if (ligneX)
+        }
+    t_PF t_AO instruction t_AF
+        {$$ = $1; // on ne peut qu’affecter $$ à la fin d'une règle
+        }
+    ;
+
+whileblock: t_WHILE t_PO expression t_PF t_AO corpsfct t_AF
+            ;
 
         
 print:  t_PRINTF t_PO t_VAR t_PF t_PV
@@ -146,11 +208,10 @@ print:  t_PRINTF t_PO t_VAR t_PF t_PV
 expression: t_INT
             {   
                 int addr_tmp = tmp_affec($1);
-                cpt_tmp_symbol++; 
                 $$ = addr_tmp;
             }
 
-            |{printf("aaa");} t_VAR {$$ = get_address($2,depth);}
+            |t_VAR {$$ = get_address($1,depth);}
 
             
 
@@ -169,21 +230,25 @@ expression: t_INT
                     $$ = operation($1,"DIV",$3);
                 } 
 
-            |{printf ("diff");}expression t_DIFF expression 
+            |expression t_DIFF expression 
                 {
-                    $$ = operation($2,"DIFF",$4);
+                    $$ = operation($1,"DIFF",$3);
+                }
+            |expression t_INF expression 
+                {
+                    $$ = operation($1,"INF",$3);
                 }
 
+            |expression t_SUP expression 
+                {
+                    $$ = operation($1,"SUP",$3);
+                }
+            |expression t_COMPAR expression 
+                {
+                    $$ = operation($1,"EQU",$3);
+                }
             ;
 
-comparateur: t_COMPAR
-            | t_NCOMPAR
-            | t_INF
-            | t_INF_E
-            | t_SUP
-            | t_SUP_E
-            | t_AFFEC
-            ;
 type:   t_TINT   {constante = 0;} 
         |  t_TCONST {constante = 1;} 
         |  t_TVOID  {constante = 0;}
