@@ -126,6 +126,7 @@
 %type <entier> ifblock;
 %type <entier> ifblock1;
 %type <entier> whileblock;
+%type <entier> whileblock1;
 %type <entier> t_WHILE;
 %type <entier> t_IF;
 %type <entier> t_ELSE;
@@ -143,6 +144,7 @@ S:  {clean_file();}type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--; pr
     | t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
     ;
 corps:     declaration instruction
+            |instruction
         ;
 
 declaration:   type t_VAR {add_symbol($2,constante,depth);} declaration_type
@@ -155,8 +157,8 @@ declaration_type: t_VIRG t_VAR {add_symbol($2,constante,depth);} declaration_typ
 
 instruction:   affectation instruction {printf("affectation puis instruction\n");}
                 | affectation
-                | fonction
                 | fonction instruction
+                | fonction
                 ;
                 
 affectation:   t_VAR t_AFFEC expression 
@@ -191,8 +193,13 @@ ifblock1:
         }
     ;
 
-whileblock: t_WHILE t_PO expression 
-                {$1 = add_asm("JMF", $3,-1, -1);     // on renvoie la ligne JMF; on veut sauter à la fin de if (ligneX)
+whileblock: whileblock1 
+            {add_asm("JMP", $1, -1, -1);    // la fin du while, on veut sauter au début du while (ligneY)
+            patch_JMF($1, get_nb_line_asm()+1);  // ligneX, la suite du programme, on veut que JMF saute ici.
+            }
+    ;
+whileblock1:t_WHILE t_PO expression 
+                {$1 = add_asm("JMF", $3,-1, -1);     // on renvoie la ligne JMF; on veut sauter au début du while (ligneX)
                 }
             t_PF t_AO corps t_AF
                 {$$ = $1; // on ne peut qu’affecter $$ à la fin d'une règle
