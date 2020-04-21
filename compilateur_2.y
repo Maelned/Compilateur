@@ -125,6 +125,8 @@
 %type <entier> expression;
 %type <entier> ifblock;
 %type <entier> ifblock1;
+%type <entier> whileblock;
+%type <entier> t_WHILE;
 %type <entier> t_IF;
 %type <entier> t_ELSE;
 %type <var> t_VAR;
@@ -140,8 +142,8 @@
 S:  {clean_file();}type t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--; print_assembly();}
     | t_MAIN t_PO t_PF t_AO {depth++;} corps t_AF {depth--;}
     ;
-corps:     declaration instruction //{printf("le corps du prog\n");}
-            ;
+corps:     declaration instruction
+        ;
 
 declaration:   type t_VAR {add_symbol($2,constante,depth);} declaration_type
                 ;
@@ -149,17 +151,12 @@ declaration:   type t_VAR {add_symbol($2,constante,depth);} declaration_type
 declaration_type: t_VIRG t_VAR {add_symbol($2,constante,depth);} declaration_type
                     | t_PV declaration 
                     | t_PV
-
-
+                ;
 
 instruction:   affectation instruction {printf("affectation puis instruction\n");}
                 | affectation
-                | print instruction {printf("printf instruction\n");}
-                | print  {printf("printf\n");}
-                | ifblock
-                | ifblock instruction
-                | whileblock
-                | whileblock instruction
+                | fonction
+                | fonction instruction
                 ;
                 
 affectation:   t_VAR t_AFFEC expression 
@@ -171,9 +168,6 @@ affectation:   t_VAR t_AFFEC expression
                 t_PV 
                 ;
 
-corpsfct:declaration instruction
-        |instruction
-        ;
 
 ifblock:
     ifblock1
@@ -192,16 +186,24 @@ ifblock1:
     t_IF t_PO expression
         {$1 = add_asm("JMF", $3,-1, -1);     // on renvoie la ligne JMF; on veut sauter à la fin de if (ligneX)
         }
-    t_PF t_AO instruction t_AF
+    t_PF t_AO corps t_AF
         {$$ = $1; // on ne peut qu’affecter $$ à la fin d'une règle
         }
     ;
 
-whileblock: t_WHILE t_PO expression t_PF t_AO corpsfct t_AF
+whileblock: t_WHILE t_PO expression 
+                {$1 = add_asm("JMF", $3,-1, -1);     // on renvoie la ligne JMF; on veut sauter à la fin de if (ligneX)
+                }
+            t_PF t_AO corps t_AF
+                {$$ = $1; // on ne peut qu’affecter $$ à la fin d'une règle
+                }
+            ;
+fonction:   printblock
+            |whileblock
+            |ifblock 
             ;
 
-        
-print:  t_PRINTF t_PO t_VAR t_PF t_PV
+printblock:  t_PRINTF t_PO t_VAR t_PF t_PV
         | t_PRINTF t_PO t_STRING t_PF t_PV
         ;
 

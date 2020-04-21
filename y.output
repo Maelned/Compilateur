@@ -17,13 +17,13 @@ Terminaux inutilisés dans la grammaire
    '/'
 
 
+État 72 conflits: 7 décalage/réduction
+État 73 conflits: 7 décalage/réduction
 État 74 conflits: 7 décalage/réduction
 État 75 conflits: 7 décalage/réduction
 État 76 conflits: 7 décalage/réduction
 État 77 conflits: 7 décalage/réduction
 État 78 conflits: 7 décalage/réduction
-État 79 conflits: 7 décalage/réduction
-État 80 conflits: 7 décalage/réduction
 
 
 Grammaire
@@ -53,49 +53,47 @@ Grammaire
    12                 | t_PV
 
    13 instruction: affectation instruction
-   14            | affectation
-   15            | print instruction
-   16            | print
-   17            | ifblock
-   18            | ifblock instruction
-   19            | whileblock
-   20            | whileblock instruction
+   14            | %empty
+   15            | fonction instruction
 
-   21 $@6: %empty
+   16 $@6: %empty
 
-   22 affectation: t_VAR t_AFFEC expression $@6 t_PV
+   17 affectation: t_VAR t_AFFEC expression $@6 t_PV
 
-   23 corpsfct: declaration instruction
-   24         | instruction
+   18 ifblock: ifblock1
 
-   25 ifblock: ifblock1
+   19 $@7: %empty
 
-   26 $@7: %empty
+   20 ifblock: ifblock1 t_ELSE $@7 t_AO instruction t_AF
 
-   27 ifblock: ifblock1 t_ELSE $@7 t_AO instruction t_AF
+   21 $@8: %empty
 
-   28 $@8: %empty
+   22 ifblock1: t_IF t_PO expression $@8 t_PF t_AO corps t_AF
 
-   29 ifblock1: t_IF t_PO expression $@8 t_PF t_AO instruction t_AF
+   23 $@9: %empty
 
-   30 whileblock: t_WHILE t_PO expression t_PF t_AO corpsfct t_AF
+   24 whileblock: t_WHILE t_PO expression $@9 t_PF t_AO corps t_AF
 
-   31 print: t_PRINTF t_PO t_VAR t_PF t_PV
-   32      | t_PRINTF t_PO t_STRING t_PF t_PV
+   25 fonction: printblock
+   26         | whileblock
+   27         | ifblock
 
-   33 expression: t_INT
-   34           | t_VAR
-   35           | expression t_ADD expression
-   36           | expression t_MUL expression
-   37           | expression t_DIV expression
-   38           | expression t_DIFF expression
-   39           | expression t_INF expression
-   40           | expression t_SUP expression
-   41           | expression t_COMPAR expression
+   28 printblock: t_PRINTF t_PO t_VAR t_PF t_PV
+   29           | t_PRINTF t_PO t_STRING t_PF t_PV
 
-   42 type: t_TINT
-   43     | t_TCONST
-   44     | t_TVOID
+   30 expression: t_INT
+   31           | t_VAR
+   32           | expression t_ADD expression
+   33           | expression t_MUL expression
+   34           | expression t_DIV expression
+   35           | expression t_DIFF expression
+   36           | expression t_INF expression
+   37           | expression t_SUP expression
+   38           | expression t_COMPAR expression
+
+   39 type: t_TINT
+   40     | t_TCONST
+   41     | t_TVOID
 
 
 Terminaux, suivis des règles où ils apparaissent
@@ -109,39 +107,39 @@ $end (0) 0
 error (256)
 t_MAIN (258) 3 5
 t_VIRG (259) 10
-t_PRINTF (260) 31 32
-t_WHILE (261) 30
-t_IF (262) 29
-t_ELSE (263) 27
-t_TINT (264) 42
-t_TVOID (265) 44
-t_INT (266) 33
+t_PRINTF (260) 28 29
+t_WHILE (261) 24
+t_IF (262) 22
+t_ELSE (263) 20
+t_TINT (264) 39
+t_TVOID (265) 41
+t_INT (266) 30
 t_FLOAT (267)
 t_CHAR (268)
-t_PO (269) 3 5 29 30 31 32
-t_PF (270) 3 5 29 30 31 32
-t_AO (271) 3 5 27 29 30
-t_AF (272) 3 5 27 29 30
+t_PO (269) 3 5 22 24 28 29
+t_PF (270) 3 5 22 24 28 29
+t_AO (271) 3 5 20 22 24
+t_AF (272) 3 5 20 22 24
 t_CO (273)
 t_CF (274)
 t_TAB (275)
-t_ADD (276) 35
-t_MUL (277) 36
-t_DIV (278) 37
-t_DIFF (279) 38
-t_COMPAR (280) 41
+t_ADD (276) 32
+t_MUL (277) 33
+t_DIV (278) 34
+t_DIFF (279) 35
+t_COMPAR (280) 38
 t_NCOMPAR (281)
 t_INF_E (282)
 t_SUP_E (283)
-t_INF (284) 39
-t_SUP (285) 40
-t_AFFEC (286) 22
+t_INF (284) 36
+t_SUP (285) 37
+t_AFFEC (286) 17
 t_RETURN (287)
 t_GUILLEMET (288)
-t_PV (289) 11 12 22 31 32
-t_VAR (290) 8 10 22 31 34
-t_STRING (291) 32
-t_TCONST (292) 43
+t_PV (289) 11 12 17 28 29
+t_VAR (290) 8 10 17 28 31
+t_STRING (291) 29
+t_TCONST (292) 40
 
 
 Non-terminaux, suivis des règles où ils apparaissent
@@ -157,9 +155,9 @@ $@2 (46)
 $@3 (47)
     à gauche: 4, à droite: 5
 corps (48)
-    à gauche: 6, à droite: 3 5
+    à gauche: 6, à droite: 3 5 22 24
 declaration (49)
-    à gauche: 8, à droite: 6 11 23
+    à gauche: 8, à droite: 6 11
 $@4 (50)
     à gauche: 7, à droite: 8
 declaration_type (51)
@@ -167,31 +165,32 @@ declaration_type (51)
 $@5 (52)
     à gauche: 9, à droite: 10
 instruction (53)
-    à gauche: 13 14 15 16 17 18 19 20, à droite: 6 13 15 18 20 23
-    24 27 29
+    à gauche: 13 14 15, à droite: 6 13 15 20
 affectation (54)
-    à gauche: 22, à droite: 13 14
+    à gauche: 17, à droite: 13
 $@6 (55)
+    à gauche: 16, à droite: 17
+ifblock (56)
+    à gauche: 18 20, à droite: 27
+$@7 (57)
+    à gauche: 19, à droite: 20
+ifblock1 (58)
+    à gauche: 22, à droite: 18 20
+$@8 (59)
     à gauche: 21, à droite: 22
-corpsfct (56)
-    à gauche: 23 24, à droite: 30
-ifblock (57)
-    à gauche: 25 27, à droite: 17 18
-$@7 (58)
-    à gauche: 26, à droite: 27
-ifblock1 (59)
-    à gauche: 29, à droite: 25 27
-$@8 (60)
-    à gauche: 28, à droite: 29
-whileblock (61)
-    à gauche: 30, à droite: 19 20
-print (62)
-    à gauche: 31 32, à droite: 15 16
-expression (63)
-    à gauche: 33 34 35 36 37 38 39 40 41, à droite: 22 29 30 35 36
-    37 38 39 40 41
-type (64)
-    à gauche: 42 43 44, à droite: 3 8
+whileblock (60)
+    à gauche: 24, à droite: 26
+$@9 (61)
+    à gauche: 23, à droite: 24
+fonction (62)
+    à gauche: 25 26 27, à droite: 15
+printblock (63)
+    à gauche: 28 29, à droite: 25
+expression (64)
+    à gauche: 30 31 32 33 34 35 36 37 38, à droite: 17 22 24 32 33
+    34 35 36 37 38
+type (65)
+    à gauche: 39 40 41, à droite: 3 8
 
 
 État 0
@@ -247,23 +246,23 @@ type (64)
 
 État 6
 
-   42 type: t_TINT .
+   39 type: t_TINT .
 
-    $défaut  réduction par utilisation de la règle 42 (type)
+    $défaut  réduction par utilisation de la règle 39 (type)
 
 
 État 7
 
-   44 type: t_TVOID .
+   41 type: t_TVOID .
 
-    $défaut  réduction par utilisation de la règle 44 (type)
+    $défaut  réduction par utilisation de la règle 41 (type)
 
 
 État 8
 
-   43 type: t_TCONST .
+   40 type: t_TCONST .
 
-    $défaut  réduction par utilisation de la règle 43 (type)
+    $défaut  réduction par utilisation de la règle 40 (type)
 
 
 État 9
@@ -339,19 +338,22 @@ type (64)
     t_IF      décalage et aller à l'état 23
     t_VAR     décalage et aller à l'état 24
 
+    $défaut  réduction par utilisation de la règle 14 (instruction)
+
     instruction  aller à l'état 25
     affectation  aller à l'état 26
     ifblock      aller à l'état 27
     ifblock1     aller à l'état 28
     whileblock   aller à l'état 29
-    print        aller à l'état 30
+    fonction     aller à l'état 30
+    printblock   aller à l'état 31
 
 
 État 18
 
     8 declaration: type . t_VAR $@4 declaration_type
 
-    t_VAR  décalage et aller à l'état 31
+    t_VAR  décalage et aller à l'état 32
 
 
 État 19
@@ -360,7 +362,7 @@ type (64)
 
     $défaut  réduction par utilisation de la règle 2 ($@2)
 
-    $@2  aller à l'état 32
+    $@2  aller à l'état 33
 
 
 État 20
@@ -372,31 +374,31 @@ type (64)
 
 État 21
 
-   31 print: t_PRINTF . t_PO t_VAR t_PF t_PV
-   32      | t_PRINTF . t_PO t_STRING t_PF t_PV
-
-    t_PO  décalage et aller à l'état 33
-
-
-État 22
-
-   30 whileblock: t_WHILE . t_PO expression t_PF t_AO corpsfct t_AF
+   28 printblock: t_PRINTF . t_PO t_VAR t_PF t_PV
+   29           | t_PRINTF . t_PO t_STRING t_PF t_PV
 
     t_PO  décalage et aller à l'état 34
 
 
-État 23
+État 22
 
-   29 ifblock1: t_IF . t_PO expression $@8 t_PF t_AO instruction t_AF
+   24 whileblock: t_WHILE . t_PO expression $@9 t_PF t_AO corps t_AF
 
     t_PO  décalage et aller à l'état 35
 
 
+État 23
+
+   22 ifblock1: t_IF . t_PO expression $@8 t_PF t_AO corps t_AF
+
+    t_PO  décalage et aller à l'état 36
+
+
 État 24
 
-   22 affectation: t_VAR . t_AFFEC expression $@6 t_PV
+   17 affectation: t_VAR . t_AFFEC expression $@6 t_PV
 
-    t_AFFEC  décalage et aller à l'état 36
+    t_AFFEC  décalage et aller à l'état 37
 
 
 État 25
@@ -409,7 +411,6 @@ type (64)
 État 26
 
    13 instruction: affectation . instruction
-   14            | affectation .
 
     t_PRINTF  décalage et aller à l'état 21
     t_WHILE   décalage et aller à l'état 22
@@ -418,94 +419,76 @@ type (64)
 
     $défaut  réduction par utilisation de la règle 14 (instruction)
 
-    instruction  aller à l'état 37
-    affectation  aller à l'état 26
-    ifblock      aller à l'état 27
-    ifblock1     aller à l'état 28
-    whileblock   aller à l'état 29
-    print        aller à l'état 30
-
-
-État 27
-
-   17 instruction: ifblock .
-   18            | ifblock . instruction
-
-    t_PRINTF  décalage et aller à l'état 21
-    t_WHILE   décalage et aller à l'état 22
-    t_IF      décalage et aller à l'état 23
-    t_VAR     décalage et aller à l'état 24
-
-    $défaut  réduction par utilisation de la règle 17 (instruction)
-
     instruction  aller à l'état 38
     affectation  aller à l'état 26
     ifblock      aller à l'état 27
     ifblock1     aller à l'état 28
     whileblock   aller à l'état 29
-    print        aller à l'état 30
+    fonction     aller à l'état 30
+    printblock   aller à l'état 31
+
+
+État 27
+
+   27 fonction: ifblock .
+
+    $défaut  réduction par utilisation de la règle 27 (fonction)
 
 
 État 28
 
-   25 ifblock: ifblock1 .
-   27        | ifblock1 . t_ELSE $@7 t_AO instruction t_AF
+   18 ifblock: ifblock1 .
+   20        | ifblock1 . t_ELSE $@7 t_AO instruction t_AF
 
     t_ELSE  décalage et aller à l'état 39
 
-    $défaut  réduction par utilisation de la règle 25 (ifblock)
+    $défaut  réduction par utilisation de la règle 18 (ifblock)
 
 
 État 29
 
-   19 instruction: whileblock .
-   20            | whileblock . instruction
+   26 fonction: whileblock .
+
+    $défaut  réduction par utilisation de la règle 26 (fonction)
+
+
+État 30
+
+   15 instruction: fonction . instruction
 
     t_PRINTF  décalage et aller à l'état 21
     t_WHILE   décalage et aller à l'état 22
     t_IF      décalage et aller à l'état 23
     t_VAR     décalage et aller à l'état 24
 
-    $défaut  réduction par utilisation de la règle 19 (instruction)
+    $défaut  réduction par utilisation de la règle 14 (instruction)
 
     instruction  aller à l'état 40
     affectation  aller à l'état 26
     ifblock      aller à l'état 27
     ifblock1     aller à l'état 28
     whileblock   aller à l'état 29
-    print        aller à l'état 30
-
-
-État 30
-
-   15 instruction: print . instruction
-   16            | print .
-
-    t_PRINTF  décalage et aller à l'état 21
-    t_WHILE   décalage et aller à l'état 22
-    t_IF      décalage et aller à l'état 23
-    t_VAR     décalage et aller à l'état 24
-
-    $défaut  réduction par utilisation de la règle 16 (instruction)
-
-    instruction  aller à l'état 41
-    affectation  aller à l'état 26
-    ifblock      aller à l'état 27
-    ifblock1     aller à l'état 28
-    whileblock   aller à l'état 29
-    print        aller à l'état 30
+    fonction     aller à l'état 30
+    printblock   aller à l'état 31
 
 
 État 31
+
+   25 fonction: printblock .
+
+    $défaut  réduction par utilisation de la règle 25 (fonction)
+
+
+État 32
 
     8 declaration: type t_VAR . $@4 declaration_type
 
     $défaut  réduction par utilisation de la règle 7 ($@4)
 
-    $@4  aller à l'état 42
+    $@4  aller à l'état 41
 
 
-État 32
+État 33
 
     3 S: $@1 type t_MAIN t_PO t_PF t_AO $@2 . corps t_AF
 
@@ -513,216 +496,205 @@ type (64)
     t_TVOID   décalage et aller à l'état 7
     t_TCONST  décalage et aller à l'état 8
 
-    corps        aller à l'état 43
+    corps        aller à l'état 42
     declaration  aller à l'état 17
     type         aller à l'état 18
 
 
-État 33
-
-   31 print: t_PRINTF t_PO . t_VAR t_PF t_PV
-   32      | t_PRINTF t_PO . t_STRING t_PF t_PV
-
-    t_VAR     décalage et aller à l'état 44
-    t_STRING  décalage et aller à l'état 45
-
-
 État 34
 
-   30 whileblock: t_WHILE t_PO . expression t_PF t_AO corpsfct t_AF
+   28 printblock: t_PRINTF t_PO . t_VAR t_PF t_PV
+   29           | t_PRINTF t_PO . t_STRING t_PF t_PV
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
-
-    expression  aller à l'état 48
+    t_VAR     décalage et aller à l'état 43
+    t_STRING  décalage et aller à l'état 44
 
 
 État 35
 
-   29 ifblock1: t_IF t_PO . expression $@8 t_PF t_AO instruction t_AF
+   24 whileblock: t_WHILE t_PO . expression $@9 t_PF t_AO corps t_AF
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
 
-    expression  aller à l'état 49
+    expression  aller à l'état 47
 
 
 État 36
 
-   22 affectation: t_VAR t_AFFEC . expression $@6 t_PV
+   22 ifblock1: t_IF t_PO . expression $@8 t_PF t_AO corps t_AF
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
 
-    expression  aller à l'état 50
+    expression  aller à l'état 48
 
 
 État 37
+
+   17 affectation: t_VAR t_AFFEC . expression $@6 t_PV
+
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
+
+    expression  aller à l'état 49
+
+
+État 38
 
    13 instruction: affectation instruction .
 
     $défaut  réduction par utilisation de la règle 13 (instruction)
 
 
-État 38
-
-   18 instruction: ifblock instruction .
-
-    $défaut  réduction par utilisation de la règle 18 (instruction)
-
-
 État 39
 
-   27 ifblock: ifblock1 t_ELSE . $@7 t_AO instruction t_AF
+   20 ifblock: ifblock1 t_ELSE . $@7 t_AO instruction t_AF
 
-    $défaut  réduction par utilisation de la règle 26 ($@7)
+    $défaut  réduction par utilisation de la règle 19 ($@7)
 
-    $@7  aller à l'état 51
+    $@7  aller à l'état 50
 
 
 État 40
 
-   20 instruction: whileblock instruction .
-
-    $défaut  réduction par utilisation de la règle 20 (instruction)
-
-
-État 41
-
-   15 instruction: print instruction .
+   15 instruction: fonction instruction .
 
     $défaut  réduction par utilisation de la règle 15 (instruction)
 
 
-État 42
+État 41
 
     8 declaration: type t_VAR $@4 . declaration_type
 
-    t_VIRG  décalage et aller à l'état 52
-    t_PV    décalage et aller à l'état 53
+    t_VIRG  décalage et aller à l'état 51
+    t_PV    décalage et aller à l'état 52
 
-    declaration_type  aller à l'état 54
+    declaration_type  aller à l'état 53
+
+
+État 42
+
+    3 S: $@1 type t_MAIN t_PO t_PF t_AO $@2 corps . t_AF
+
+    t_AF  décalage et aller à l'état 54
 
 
 État 43
 
-    3 S: $@1 type t_MAIN t_PO t_PF t_AO $@2 corps . t_AF
+   28 printblock: t_PRINTF t_PO t_VAR . t_PF t_PV
 
-    t_AF  décalage et aller à l'état 55
+    t_PF  décalage et aller à l'état 55
 
 
 État 44
 
-   31 print: t_PRINTF t_PO t_VAR . t_PF t_PV
+   29 printblock: t_PRINTF t_PO t_STRING . t_PF t_PV
 
     t_PF  décalage et aller à l'état 56
 
 
 État 45
 
-   32 print: t_PRINTF t_PO t_STRING . t_PF t_PV
+   30 expression: t_INT .
 
-    t_PF  décalage et aller à l'état 57
+    $défaut  réduction par utilisation de la règle 30 (expression)
 
 
 État 46
 
-   33 expression: t_INT .
+   31 expression: t_VAR .
 
-    $défaut  réduction par utilisation de la règle 33 (expression)
+    $défaut  réduction par utilisation de la règle 31 (expression)
 
 
 État 47
 
-   34 expression: t_VAR .
+   24 whileblock: t_WHILE t_PO expression . $@9 t_PF t_AO corps t_AF
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
 
-    $défaut  réduction par utilisation de la règle 34 (expression)
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
+
+    $défaut  réduction par utilisation de la règle 23 ($@9)
+
+    $@9  aller à l'état 64
 
 
 État 48
 
-   30 whileblock: t_WHILE t_PO expression . t_PF t_AO corpsfct t_AF
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
+   22 ifblock1: t_IF t_PO expression . $@8 t_PF t_AO corps t_AF
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
 
-    t_PF      décalage et aller à l'état 58
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
+
+    $défaut  réduction par utilisation de la règle 21 ($@8)
+
+    $@8  aller à l'état 65
 
 
 État 49
 
-   29 ifblock1: t_IF t_PO expression . $@8 t_PF t_AO instruction t_AF
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
+   17 affectation: t_VAR t_AFFEC expression . $@6 t_PV
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
 
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
 
-    $défaut  réduction par utilisation de la règle 28 ($@8)
+    $défaut  réduction par utilisation de la règle 16 ($@6)
 
-    $@8  aller à l'état 66
+    $@6  aller à l'état 66
 
 
 État 50
 
-   22 affectation: t_VAR t_AFFEC expression . $@6 t_PV
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
+   20 ifblock: ifblock1 t_ELSE $@7 . t_AO instruction t_AF
 
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
-
-    $défaut  réduction par utilisation de la règle 21 ($@6)
-
-    $@6  aller à l'état 67
+    t_AO  décalage et aller à l'état 67
 
 
 État 51
 
-   27 ifblock: ifblock1 t_ELSE $@7 . t_AO instruction t_AF
+   10 declaration_type: t_VIRG . t_VAR $@5 declaration_type
 
-    t_AO  décalage et aller à l'état 68
+    t_VAR  décalage et aller à l'état 68
 
 
 État 52
-
-   10 declaration_type: t_VIRG . t_VAR $@5 declaration_type
-
-    t_VAR  décalage et aller à l'état 69
-
-
-État 53
 
    11 declaration_type: t_PV . declaration
    12                 | t_PV .
@@ -733,217 +705,284 @@ type (64)
 
     $défaut  réduction par utilisation de la règle 12 (declaration_type)
 
-    declaration  aller à l'état 70
+    declaration  aller à l'état 69
     type         aller à l'état 18
 
 
-État 54
+État 53
 
     8 declaration: type t_VAR $@4 declaration_type .
 
     $défaut  réduction par utilisation de la règle 8 (declaration)
 
 
-État 55
+État 54
 
     3 S: $@1 type t_MAIN t_PO t_PF t_AO $@2 corps t_AF .
 
     $défaut  réduction par utilisation de la règle 3 (S)
 
 
+État 55
+
+   28 printblock: t_PRINTF t_PO t_VAR t_PF . t_PV
+
+    t_PV  décalage et aller à l'état 70
+
+
 État 56
 
-   31 print: t_PRINTF t_PO t_VAR t_PF . t_PV
+   29 printblock: t_PRINTF t_PO t_STRING t_PF . t_PV
 
     t_PV  décalage et aller à l'état 71
 
 
 État 57
 
-   32 print: t_PRINTF t_PO t_STRING t_PF . t_PV
+   32 expression: expression t_ADD . expression
 
-    t_PV  décalage et aller à l'état 72
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
+
+    expression  aller à l'état 72
 
 
 État 58
 
-   30 whileblock: t_WHILE t_PO expression t_PF . t_AO corpsfct t_AF
+   33 expression: expression t_MUL . expression
 
-    t_AO  décalage et aller à l'état 73
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
+
+    expression  aller à l'état 73
 
 
 État 59
 
-   35 expression: expression t_ADD . expression
+   34 expression: expression t_DIV . expression
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
 
     expression  aller à l'état 74
 
 
 État 60
 
-   36 expression: expression t_MUL . expression
+   35 expression: expression t_DIFF . expression
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
 
     expression  aller à l'état 75
 
 
 État 61
 
-   37 expression: expression t_DIV . expression
+   38 expression: expression t_COMPAR . expression
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
 
     expression  aller à l'état 76
 
 
 État 62
 
-   38 expression: expression t_DIFF . expression
+   36 expression: expression t_INF . expression
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
 
     expression  aller à l'état 77
 
 
 État 63
 
-   41 expression: expression t_COMPAR . expression
+   37 expression: expression t_SUP . expression
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
+    t_INT  décalage et aller à l'état 45
+    t_VAR  décalage et aller à l'état 46
 
     expression  aller à l'état 78
 
 
 État 64
 
-   39 expression: expression t_INF . expression
+   24 whileblock: t_WHILE t_PO expression $@9 . t_PF t_AO corps t_AF
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
-
-    expression  aller à l'état 79
+    t_PF  décalage et aller à l'état 79
 
 
 État 65
 
-   40 expression: expression t_SUP . expression
+   22 ifblock1: t_IF t_PO expression $@8 . t_PF t_AO corps t_AF
 
-    t_INT  décalage et aller à l'état 46
-    t_VAR  décalage et aller à l'état 47
-
-    expression  aller à l'état 80
+    t_PF  décalage et aller à l'état 80
 
 
 État 66
 
-   29 ifblock1: t_IF t_PO expression $@8 . t_PF t_AO instruction t_AF
+   17 affectation: t_VAR t_AFFEC expression $@6 . t_PV
 
-    t_PF  décalage et aller à l'état 81
+    t_PV  décalage et aller à l'état 81
 
 
 État 67
 
-   22 affectation: t_VAR t_AFFEC expression $@6 . t_PV
-
-    t_PV  décalage et aller à l'état 82
-
-
-État 68
-
-   27 ifblock: ifblock1 t_ELSE $@7 t_AO . instruction t_AF
+   20 ifblock: ifblock1 t_ELSE $@7 t_AO . instruction t_AF
 
     t_PRINTF  décalage et aller à l'état 21
     t_WHILE   décalage et aller à l'état 22
     t_IF      décalage et aller à l'état 23
     t_VAR     décalage et aller à l'état 24
 
-    instruction  aller à l'état 83
+    $défaut  réduction par utilisation de la règle 14 (instruction)
+
+    instruction  aller à l'état 82
     affectation  aller à l'état 26
     ifblock      aller à l'état 27
     ifblock1     aller à l'état 28
     whileblock   aller à l'état 29
-    print        aller à l'état 30
+    fonction     aller à l'état 30
+    printblock   aller à l'état 31
 
 
-État 69
+État 68
 
    10 declaration_type: t_VIRG t_VAR . $@5 declaration_type
 
     $défaut  réduction par utilisation de la règle 9 ($@5)
 
-    $@5  aller à l'état 84
+    $@5  aller à l'état 83
 
 
-État 70
+État 69
 
    11 declaration_type: t_PV declaration .
 
     $défaut  réduction par utilisation de la règle 11 (declaration_type)
 
 
+État 70
+
+   28 printblock: t_PRINTF t_PO t_VAR t_PF t_PV .
+
+    $défaut  réduction par utilisation de la règle 28 (printblock)
+
+
 État 71
 
-   31 print: t_PRINTF t_PO t_VAR t_PF t_PV .
+   29 printblock: t_PRINTF t_PO t_STRING t_PF t_PV .
 
-    $défaut  réduction par utilisation de la règle 31 (print)
+    $défaut  réduction par utilisation de la règle 29 (printblock)
 
 
 État 72
 
-   32 print: t_PRINTF t_PO t_STRING t_PF t_PV .
+   32 expression: expression . t_ADD expression
+   32           | expression t_ADD expression .
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
 
-    $défaut  réduction par utilisation de la règle 32 (print)
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
+
+    t_ADD     [réduction par utilisation de la règle 32 (expression)]
+    t_MUL     [réduction par utilisation de la règle 32 (expression)]
+    t_DIV     [réduction par utilisation de la règle 32 (expression)]
+    t_DIFF    [réduction par utilisation de la règle 32 (expression)]
+    t_COMPAR  [réduction par utilisation de la règle 32 (expression)]
+    t_INF     [réduction par utilisation de la règle 32 (expression)]
+    t_SUP     [réduction par utilisation de la règle 32 (expression)]
+    $défaut  réduction par utilisation de la règle 32 (expression)
 
 
 État 73
 
-   30 whileblock: t_WHILE t_PO expression t_PF t_AO . corpsfct t_AF
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   33           | expression t_MUL expression .
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
 
-    t_PRINTF  décalage et aller à l'état 21
-    t_WHILE   décalage et aller à l'état 22
-    t_IF      décalage et aller à l'état 23
-    t_TINT    décalage et aller à l'état 6
-    t_TVOID   décalage et aller à l'état 7
-    t_VAR     décalage et aller à l'état 24
-    t_TCONST  décalage et aller à l'état 8
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
 
-    declaration  aller à l'état 85
-    instruction  aller à l'état 86
-    affectation  aller à l'état 26
-    corpsfct     aller à l'état 87
-    ifblock      aller à l'état 27
-    ifblock1     aller à l'état 28
-    whileblock   aller à l'état 29
-    print        aller à l'état 30
-    type         aller à l'état 18
+    t_ADD     [réduction par utilisation de la règle 33 (expression)]
+    t_MUL     [réduction par utilisation de la règle 33 (expression)]
+    t_DIV     [réduction par utilisation de la règle 33 (expression)]
+    t_DIFF    [réduction par utilisation de la règle 33 (expression)]
+    t_COMPAR  [réduction par utilisation de la règle 33 (expression)]
+    t_INF     [réduction par utilisation de la règle 33 (expression)]
+    t_SUP     [réduction par utilisation de la règle 33 (expression)]
+    $défaut  réduction par utilisation de la règle 33 (expression)
 
 
 État 74
 
-   35 expression: expression . t_ADD expression
-   35           | expression t_ADD expression .
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   34           | expression t_DIV expression .
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
 
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
+
+    t_ADD     [réduction par utilisation de la règle 34 (expression)]
+    t_MUL     [réduction par utilisation de la règle 34 (expression)]
+    t_DIV     [réduction par utilisation de la règle 34 (expression)]
+    t_DIFF    [réduction par utilisation de la règle 34 (expression)]
+    t_COMPAR  [réduction par utilisation de la règle 34 (expression)]
+    t_INF     [réduction par utilisation de la règle 34 (expression)]
+    t_SUP     [réduction par utilisation de la règle 34 (expression)]
+    $défaut  réduction par utilisation de la règle 34 (expression)
+
+
+État 75
+
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   35           | expression t_DIFF expression .
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
+
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
 
     t_ADD     [réduction par utilisation de la règle 35 (expression)]
     t_MUL     [réduction par utilisation de la règle 35 (expression)]
@@ -955,82 +994,24 @@ type (64)
     $défaut  réduction par utilisation de la règle 35 (expression)
 
 
-État 75
-
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   36           | expression t_MUL expression .
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
-
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
-
-    t_ADD     [réduction par utilisation de la règle 36 (expression)]
-    t_MUL     [réduction par utilisation de la règle 36 (expression)]
-    t_DIV     [réduction par utilisation de la règle 36 (expression)]
-    t_DIFF    [réduction par utilisation de la règle 36 (expression)]
-    t_COMPAR  [réduction par utilisation de la règle 36 (expression)]
-    t_INF     [réduction par utilisation de la règle 36 (expression)]
-    t_SUP     [réduction par utilisation de la règle 36 (expression)]
-    $défaut  réduction par utilisation de la règle 36 (expression)
-
-
 État 76
 
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   37           | expression t_DIV expression .
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
+   38           | expression t_COMPAR expression .
 
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
-
-    t_ADD     [réduction par utilisation de la règle 37 (expression)]
-    t_MUL     [réduction par utilisation de la règle 37 (expression)]
-    t_DIV     [réduction par utilisation de la règle 37 (expression)]
-    t_DIFF    [réduction par utilisation de la règle 37 (expression)]
-    t_COMPAR  [réduction par utilisation de la règle 37 (expression)]
-    t_INF     [réduction par utilisation de la règle 37 (expression)]
-    t_SUP     [réduction par utilisation de la règle 37 (expression)]
-    $défaut  réduction par utilisation de la règle 37 (expression)
-
-
-État 77
-
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   38           | expression t_DIFF expression .
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
-
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
 
     t_ADD     [réduction par utilisation de la règle 38 (expression)]
     t_MUL     [réduction par utilisation de la règle 38 (expression)]
@@ -1042,209 +1023,165 @@ type (64)
     $défaut  réduction par utilisation de la règle 38 (expression)
 
 
+État 77
+
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   36           | expression t_INF expression .
+   37           | expression . t_SUP expression
+   38           | expression . t_COMPAR expression
+
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
+
+    t_ADD     [réduction par utilisation de la règle 36 (expression)]
+    t_MUL     [réduction par utilisation de la règle 36 (expression)]
+    t_DIV     [réduction par utilisation de la règle 36 (expression)]
+    t_DIFF    [réduction par utilisation de la règle 36 (expression)]
+    t_COMPAR  [réduction par utilisation de la règle 36 (expression)]
+    t_INF     [réduction par utilisation de la règle 36 (expression)]
+    t_SUP     [réduction par utilisation de la règle 36 (expression)]
+    $défaut  réduction par utilisation de la règle 36 (expression)
+
+
 État 78
 
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
-   41           | expression t_COMPAR expression .
+   32 expression: expression . t_ADD expression
+   33           | expression . t_MUL expression
+   34           | expression . t_DIV expression
+   35           | expression . t_DIFF expression
+   36           | expression . t_INF expression
+   37           | expression . t_SUP expression
+   37           | expression t_SUP expression .
+   38           | expression . t_COMPAR expression
 
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
+    t_ADD     décalage et aller à l'état 57
+    t_MUL     décalage et aller à l'état 58
+    t_DIV     décalage et aller à l'état 59
+    t_DIFF    décalage et aller à l'état 60
+    t_COMPAR  décalage et aller à l'état 61
+    t_INF     décalage et aller à l'état 62
+    t_SUP     décalage et aller à l'état 63
 
-    t_ADD     [réduction par utilisation de la règle 41 (expression)]
-    t_MUL     [réduction par utilisation de la règle 41 (expression)]
-    t_DIV     [réduction par utilisation de la règle 41 (expression)]
-    t_DIFF    [réduction par utilisation de la règle 41 (expression)]
-    t_COMPAR  [réduction par utilisation de la règle 41 (expression)]
-    t_INF     [réduction par utilisation de la règle 41 (expression)]
-    t_SUP     [réduction par utilisation de la règle 41 (expression)]
-    $défaut  réduction par utilisation de la règle 41 (expression)
+    t_ADD     [réduction par utilisation de la règle 37 (expression)]
+    t_MUL     [réduction par utilisation de la règle 37 (expression)]
+    t_DIV     [réduction par utilisation de la règle 37 (expression)]
+    t_DIFF    [réduction par utilisation de la règle 37 (expression)]
+    t_COMPAR  [réduction par utilisation de la règle 37 (expression)]
+    t_INF     [réduction par utilisation de la règle 37 (expression)]
+    t_SUP     [réduction par utilisation de la règle 37 (expression)]
+    $défaut  réduction par utilisation de la règle 37 (expression)
 
 
 État 79
 
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   39           | expression t_INF expression .
-   40           | expression . t_SUP expression
-   41           | expression . t_COMPAR expression
+   24 whileblock: t_WHILE t_PO expression $@9 t_PF . t_AO corps t_AF
 
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
-
-    t_ADD     [réduction par utilisation de la règle 39 (expression)]
-    t_MUL     [réduction par utilisation de la règle 39 (expression)]
-    t_DIV     [réduction par utilisation de la règle 39 (expression)]
-    t_DIFF    [réduction par utilisation de la règle 39 (expression)]
-    t_COMPAR  [réduction par utilisation de la règle 39 (expression)]
-    t_INF     [réduction par utilisation de la règle 39 (expression)]
-    t_SUP     [réduction par utilisation de la règle 39 (expression)]
-    $défaut  réduction par utilisation de la règle 39 (expression)
+    t_AO  décalage et aller à l'état 84
 
 
 État 80
 
-   35 expression: expression . t_ADD expression
-   36           | expression . t_MUL expression
-   37           | expression . t_DIV expression
-   38           | expression . t_DIFF expression
-   39           | expression . t_INF expression
-   40           | expression . t_SUP expression
-   40           | expression t_SUP expression .
-   41           | expression . t_COMPAR expression
+   22 ifblock1: t_IF t_PO expression $@8 t_PF . t_AO corps t_AF
 
-    t_ADD     décalage et aller à l'état 59
-    t_MUL     décalage et aller à l'état 60
-    t_DIV     décalage et aller à l'état 61
-    t_DIFF    décalage et aller à l'état 62
-    t_COMPAR  décalage et aller à l'état 63
-    t_INF     décalage et aller à l'état 64
-    t_SUP     décalage et aller à l'état 65
-
-    t_ADD     [réduction par utilisation de la règle 40 (expression)]
-    t_MUL     [réduction par utilisation de la règle 40 (expression)]
-    t_DIV     [réduction par utilisation de la règle 40 (expression)]
-    t_DIFF    [réduction par utilisation de la règle 40 (expression)]
-    t_COMPAR  [réduction par utilisation de la règle 40 (expression)]
-    t_INF     [réduction par utilisation de la règle 40 (expression)]
-    t_SUP     [réduction par utilisation de la règle 40 (expression)]
-    $défaut  réduction par utilisation de la règle 40 (expression)
+    t_AO  décalage et aller à l'état 85
 
 
 État 81
 
-   29 ifblock1: t_IF t_PO expression $@8 t_PF . t_AO instruction t_AF
+   17 affectation: t_VAR t_AFFEC expression $@6 t_PV .
 
-    t_AO  décalage et aller à l'état 88
+    $défaut  réduction par utilisation de la règle 17 (affectation)
 
 
 État 82
 
-   22 affectation: t_VAR t_AFFEC expression $@6 t_PV .
+   20 ifblock: ifblock1 t_ELSE $@7 t_AO instruction . t_AF
 
-    $défaut  réduction par utilisation de la règle 22 (affectation)
+    t_AF  décalage et aller à l'état 86
 
 
 État 83
 
-   27 ifblock: ifblock1 t_ELSE $@7 t_AO instruction . t_AF
+   10 declaration_type: t_VIRG t_VAR $@5 . declaration_type
 
-    t_AF  décalage et aller à l'état 89
+    t_VIRG  décalage et aller à l'état 51
+    t_PV    décalage et aller à l'état 52
+
+    declaration_type  aller à l'état 87
 
 
 État 84
 
-   10 declaration_type: t_VIRG t_VAR $@5 . declaration_type
+   24 whileblock: t_WHILE t_PO expression $@9 t_PF t_AO . corps t_AF
 
-    t_VIRG  décalage et aller à l'état 52
-    t_PV    décalage et aller à l'état 53
+    t_TINT    décalage et aller à l'état 6
+    t_TVOID   décalage et aller à l'état 7
+    t_TCONST  décalage et aller à l'état 8
 
-    declaration_type  aller à l'état 90
+    corps        aller à l'état 88
+    declaration  aller à l'état 17
+    type         aller à l'état 18
 
 
 État 85
 
-   23 corpsfct: declaration . instruction
+   22 ifblock1: t_IF t_PO expression $@8 t_PF t_AO . corps t_AF
 
-    t_PRINTF  décalage et aller à l'état 21
-    t_WHILE   décalage et aller à l'état 22
-    t_IF      décalage et aller à l'état 23
-    t_VAR     décalage et aller à l'état 24
+    t_TINT    décalage et aller à l'état 6
+    t_TVOID   décalage et aller à l'état 7
+    t_TCONST  décalage et aller à l'état 8
 
-    instruction  aller à l'état 91
-    affectation  aller à l'état 26
-    ifblock      aller à l'état 27
-    ifblock1     aller à l'état 28
-    whileblock   aller à l'état 29
-    print        aller à l'état 30
+    corps        aller à l'état 89
+    declaration  aller à l'état 17
+    type         aller à l'état 18
 
 
 État 86
 
-   24 corpsfct: instruction .
+   20 ifblock: ifblock1 t_ELSE $@7 t_AO instruction t_AF .
 
-    $défaut  réduction par utilisation de la règle 24 (corpsfct)
+    $défaut  réduction par utilisation de la règle 20 (ifblock)
 
 
 État 87
-
-   30 whileblock: t_WHILE t_PO expression t_PF t_AO corpsfct . t_AF
-
-    t_AF  décalage et aller à l'état 92
-
-
-État 88
-
-   29 ifblock1: t_IF t_PO expression $@8 t_PF t_AO . instruction t_AF
-
-    t_PRINTF  décalage et aller à l'état 21
-    t_WHILE   décalage et aller à l'état 22
-    t_IF      décalage et aller à l'état 23
-    t_VAR     décalage et aller à l'état 24
-
-    instruction  aller à l'état 93
-    affectation  aller à l'état 26
-    ifblock      aller à l'état 27
-    ifblock1     aller à l'état 28
-    whileblock   aller à l'état 29
-    print        aller à l'état 30
-
-
-État 89
-
-   27 ifblock: ifblock1 t_ELSE $@7 t_AO instruction t_AF .
-
-    $défaut  réduction par utilisation de la règle 27 (ifblock)
-
-
-État 90
 
    10 declaration_type: t_VIRG t_VAR $@5 declaration_type .
 
     $défaut  réduction par utilisation de la règle 10 (declaration_type)
 
 
+État 88
+
+   24 whileblock: t_WHILE t_PO expression $@9 t_PF t_AO corps . t_AF
+
+    t_AF  décalage et aller à l'état 90
+
+
+État 89
+
+   22 ifblock1: t_IF t_PO expression $@8 t_PF t_AO corps . t_AF
+
+    t_AF  décalage et aller à l'état 91
+
+
+État 90
+
+   24 whileblock: t_WHILE t_PO expression $@9 t_PF t_AO corps t_AF .
+
+    $défaut  réduction par utilisation de la règle 24 (whileblock)
+
+
 État 91
 
-   23 corpsfct: declaration instruction .
+   22 ifblock1: t_IF t_PO expression $@8 t_PF t_AO corps t_AF .
 
-    $défaut  réduction par utilisation de la règle 23 (corpsfct)
-
-
-État 92
-
-   30 whileblock: t_WHILE t_PO expression t_PF t_AO corpsfct t_AF .
-
-    $défaut  réduction par utilisation de la règle 30 (whileblock)
-
-
-État 93
-
-   29 ifblock1: t_IF t_PO expression $@8 t_PF t_AO instruction . t_AF
-
-    t_AF  décalage et aller à l'état 94
-
-
-État 94
-
-   29 ifblock1: t_IF t_PO expression $@8 t_PF t_AO instruction t_AF .
-
-    $défaut  réduction par utilisation de la règle 29 (ifblock1)
+    $défaut  réduction par utilisation de la règle 22 (ifblock1)
