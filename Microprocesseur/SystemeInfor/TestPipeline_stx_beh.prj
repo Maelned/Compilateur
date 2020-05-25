@@ -1,6 +1,0 @@
-vhdl isim_temp "processeur.vhd"
-vhdl isim_temp "BancReg.vhd"
-vhdl isim_temp "BancMemInstruc.vhd"
-vhdl isim_temp "BancMemData.vhd"
-vhdl isim_temp "pipeline.vhd"
-vhdl isim_temp "TestPipeline.vhd"

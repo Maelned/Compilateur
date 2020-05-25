@@ -1,5 +1,0 @@
-set -tmpdir "D:/Bureau/Cours INSA/SystemeInfor/xst/projnav.tmp"
-set -xsthdpdir "D:/Bureau/Cours INSA/SystemeInfor/xst"
-elaborate
--ifn BancReg.prj
--ifmt mixed
