@@ -1,0 +1,2 @@
+vhdl isim_temp "BancMemInstruc.vhd"
+vhdl isim_temp "TestBancInstruc.vhd"

@@ -1,0 +1,5 @@
+vhdl work "D:\Bureau\Cours INSA\SystemeInfor\processeur.vhd"
+vhdl work "D:\Bureau\Cours INSA\SystemeInfor\BancReg.vhd"
+vhdl work "D:\Bureau\Cours INSA\SystemeInfor\BancMemInstruc.vhd"
+vhdl work "D:\Bureau\Cours INSA\SystemeInfor\BancMemData.vhd"
+vhdl work "D:\Bureau\Cours INSA\SystemeInfor\pipeline.vhd"

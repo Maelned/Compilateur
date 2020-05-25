@@ -1,0 +1,6 @@
+vhdl work "processeur.vhd"
+vhdl work "BancReg.vhd"
+vhdl work "BancMemInstruc.vhd"
+vhdl work "BancMemData.vhd"
+vhdl work "pipeline.vhd"
+vhdl work "TestPipeline.vhd"

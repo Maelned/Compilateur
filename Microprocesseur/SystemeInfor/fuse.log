@@ -1,0 +1,30 @@
+Running: C:\Xilinx\13.4\ISE_DS\ISE\bin\nt64\unwrapped\fuse.exe -intstyle ise -incremental -o D:/Bureau/Cours INSA/SystemeInfor/TestPipeline_isim_beh.exe -prj D:/Bureau/Cours INSA/SystemeInfor/TestPipeline_beh.prj work.TestPipeline 
+ISim O.87xd (signature 0xc3576ebc)
+Number of CPUs detected in this system: 8
+Turning on mult-threading, number of parallel sub-compilation jobs: 16 
+Determining compilation order of HDL files
+Parsing VHDL file "D:/Bureau/Cours INSA/SystemeInfor/processeur.vhd" into library work
+Parsing VHDL file "D:/Bureau/Cours INSA/SystemeInfor/BancReg.vhd" into library work
+Parsing VHDL file "D:/Bureau/Cours INSA/SystemeInfor/BancMemInstruc.vhd" into library work
+Parsing VHDL file "D:/Bureau/Cours INSA/SystemeInfor/BancMemData.vhd" into library work
+Parsing VHDL file "D:/Bureau/Cours INSA/SystemeInfor/pipeline.vhd" into library work
+Parsing VHDL file "D:/Bureau/Cours INSA/SystemeInfor/TestPipeline.vhd" into library work
+Starting static elaboration
+Completed static elaboration
+Compiling package standard
+Compiling package std_logic_1164
+Compiling package std_logic_arith
+Compiling package std_logic_unsigned
+Compiling package numeric_std
+Compiling architecture behavioral of entity BancReg [bancreg_default]
+Compiling architecture behavioral of entity ual [ual_default]
+Compiling architecture behavioral of entity BancMem [bancmem_default]
+Compiling architecture behavioral of entity BancMemInstruc [bancmeminstruc_default]
+Compiling architecture behavioral of entity pipeline [pipeline_default]
+Compiling architecture behavior of entity testpipeline
+Time Resolution for simulation is 1ps.
+Waiting for 1 sub-compilation(s) to finish...
+Compiled 16 VHDL Units
+Built simulation executable D:/Bureau/Cours INSA/SystemeInfor/TestPipeline_isim_beh.exe
+Fuse Memory Usage: 37168 KB
+Fuse CPU Usage: 405 ms

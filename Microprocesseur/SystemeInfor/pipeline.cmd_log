@@ -1,0 +1,7 @@
+xst -intstyle ise -ifn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.xst" -ofn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.syr" 
+netgen -intstyle ise -insert_glbl true -w -dir netgen/synthesis -ofmt verilog -sim pipeline.ngc pipeline_synthesis.v 
+xst -intstyle ise -ifn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.xst" -ofn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.syr" 
+xst -intstyle ise -ifn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.xst" -ofn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.syr" 
+xst -intstyle ise -ifn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.xst" -ofn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.syr" 
+xst -intstyle ise -ifn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.xst" -ofn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.syr" 
+xst -intstyle ise -ifn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.xst" -ofn "D:/Bureau/Cours INSA/SystemeInfor/pipeline.syr" 
